@@ -2,10 +2,10 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { AppState } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { queryClient as qc, trpc } from "~/utils/api";
+import type { CyclePhase } from "./cycle-utils";
+import { trpc } from "~/utils/api";
 import { authClient } from "~/utils/auth";
 import { getPhaseForDay } from "./cycle-utils";
-import type { CyclePhase } from "./cycle-utils";
 
 export type ProfileMode = "cycle" | "perimenopause";
 
@@ -19,14 +19,14 @@ export interface CycleData {
   lastPeriodStart: Date;
 }
 
-export type UserProfileData = {
+export interface UserProfileData {
   name: string;
   cycleLength: number;
   periodLength: number;
   lastPeriodStart: string;
   mode: string;
   birthYear?: number | null;
-};
+}
 
 interface ProfileContextValue {
   mode: ProfileMode;
@@ -42,7 +42,7 @@ interface ProfileContextValue {
 const _today = new Date();
 const DEFAULT_CYCLE: CycleData = {
   dayOfCycle: 7,
-  phase: "follicular" as CyclePhase,
+  phase: "follicular" satisfies CyclePhase,
   daysUntilNextPeriod: 21,
   daysUntilOvulation: 7,
   cycleLength: 28,
@@ -56,7 +56,7 @@ const DEFAULT_CYCLE: CycleData = {
 
 const ProfileContext = createContext<ProfileContextValue>({
   mode: "cycle",
-  setMode: () => {},
+  setMode: (_mode: ProfileMode) => { /* noop */ },
   profile: null,
   cycleData: DEFAULT_CYCLE,
   hasRealCycleData: false,
@@ -77,7 +77,11 @@ function computeCycleData(
     (today.getTime() - lastPeriodStart.getTime()) / (1000 * 60 * 60 * 24),
   );
   const dayOfCycle = Math.max(1, (daysSinceStart % cycleLength) + 1);
-  const phase = getPhaseForDay(dayOfCycle, cycleLength, periodLength) as CyclePhase;
+  const phase = getPhaseForDay(
+    dayOfCycle,
+    cycleLength,
+    periodLength,
+  );
   const daysUntilNextPeriod = cycleLength - dayOfCycle + 1;
   const ovulationDay = cycleLength - 14;
   const daysUntilOvulation =
@@ -98,7 +102,9 @@ function computeCycleData(
 
 // Returns all detected period start dates (ascending), each being the first
 // day of a consecutive group of flow-logged days.
-function detectAllPeriodStarts(logs: { date: string; flow?: string | null }[]): string[] {
+function detectAllPeriodStarts(
+  logs: { date: string; flow?: string | null }[],
+): string[] {
   const flowDates = logs
     .filter((l) => l.flow && l.flow !== "none" && l.flow !== "")
     .map((l) => l.date)
@@ -106,22 +112,24 @@ function detectAllPeriodStarts(logs: { date: string; flow?: string | null }[]): 
   if (flowDates.length === 0) return [];
 
   const starts: string[] = [];
-  let groupStart = flowDates[0]!;
+  let groupStart = flowDates[0] ?? "";
 
   for (let i = 1; i < flowDates.length; i++) {
-    const prev = new Date(flowDates[i - 1]! + "T00:00:00");
-    const curr = new Date(flowDates[i]! + "T00:00:00");
+    const prev = new Date((flowDates[i - 1] ?? "") + "T00:00:00");
+    const curr = new Date((flowDates[i] ?? "") + "T00:00:00");
     if (curr.getTime() - prev.getTime() > 2 * 86400000) {
       // gap bigger than 2 days → new period group
       starts.push(groupStart);
-      groupStart = flowDates[i]!;
+      groupStart = flowDates[i] ?? "";
     }
   }
   starts.push(groupStart);
   return starts;
 }
 
-function detectFirstFlowDate(logs: { date: string; flow?: string | null }[]): string | null {
+function detectFirstFlowDate(
+  logs: { date: string; flow?: string | null }[],
+): string | null {
   const starts = detectAllPeriodStarts(logs);
   // Return start of the most recent period
   return starts.length > 0 ? (starts[starts.length - 1] ?? null) : null;
@@ -129,13 +137,15 @@ function detectFirstFlowDate(logs: { date: string; flow?: string | null }[]): st
 
 // Derive average cycle length from gaps between detected period starts.
 // Returns null if fewer than 2 periods found (not enough data).
-function detectAvgCycleLength(logs: { date: string; flow?: string | null }[]): number | null {
+function detectAvgCycleLength(
+  logs: { date: string; flow?: string | null }[],
+): number | null {
   const starts = detectAllPeriodStarts(logs);
   if (starts.length < 2) return null;
   const gaps: number[] = [];
   for (let i = 1; i < starts.length; i++) {
-    const a = new Date(starts[i - 1]! + "T00:00:00");
-    const b = new Date(starts[i]! + "T00:00:00");
+    const a = new Date((starts[i - 1] ?? "") + "T00:00:00");
+    const b = new Date((starts[i] ?? "") + "T00:00:00");
     const days = Math.round((b.getTime() - a.getTime()) / 86400000);
     if (days >= 18 && days <= 60) gaps.push(days); // sanity filter
   }
@@ -201,7 +211,8 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   });
 
   const profile = profileQuery.data ?? null;
-  const mode = (profile?.mode as ProfileMode) ?? "cycle";
+  const mode: ProfileMode =
+    profile?.mode === "perimenopause" ? "perimenopause" : "cycle";
 
   const setMode = (newMode: ProfileMode) => {
     upsertMutation.mutate({ mode: newMode });
@@ -221,7 +232,8 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
 
   // Show cycle ring as soon as the user has any log, even without flow data
   const hasAnyLogs = logs.length > 0;
-  const hasRealCycleData = profileHasRealDate || !!loggedPeriodStart || hasAnyLogs;
+  const hasRealCycleData =
+    profileHasRealDate || !!loggedPeriodStart || hasAnyLogs;
 
   // We know today's actual phase only when there's flow data or a real profile date
   const hasCurrentPhaseData = profileHasRealDate || !!loggedPeriodStart;
@@ -231,19 +243,22 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const hasCyclePrediction =
     profileHasRealDate || (!!loggedPeriodStart && loggedPeriodStart < todayStr);
 
-  const effectiveLastPeriodStart = loggedPeriodStart
-    ?? (profileHasRealDate && profile ? profile.lastPeriodStart : todayStr);
+  const effectiveLastPeriodStart =
+    loggedPeriodStart ??
+    (profileHasRealDate ? profile.lastPeriodStart : todayStr);
 
   // Use detected period length from consecutive logged flow days when available
   const detectedPeriodLength = loggedPeriodStart
     ? detectActualPeriodLength(typedLogs, loggedPeriodStart, todayStr)
     : null;
-  const effectivePeriodLength = detectedPeriodLength ?? profile?.periodLength ?? 5;
+  const effectivePeriodLength =
+    detectedPeriodLength ?? profile?.periodLength ?? 5;
 
   // Derive cycle length from logged history (average gap between detected periods).
   // Falls back to the manually-set profile value so single-cycle users still get a prediction.
   const detectedCycleLength = detectAvgCycleLength(typedLogs);
-  const effectiveCycleLength = detectedCycleLength ?? profile?.cycleLength ?? 28;
+  const effectiveCycleLength =
+    detectedCycleLength ?? profile?.cycleLength ?? 28;
 
   const cycleData = profile
     ? computeCycleData(

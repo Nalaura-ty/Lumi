@@ -75,9 +75,7 @@ export const logRouter = {
     }),
 
   history: protectedProcedure
-    .input(
-      z.object({ days: z.number().int().min(1).max(365).default(90) }),
-    )
+    .input(z.object({ days: z.number().int().min(1).max(365).default(90) }))
     .query(async ({ ctx, input }) => {
       const since = new Date();
       since.setDate(since.getDate() - input.days);

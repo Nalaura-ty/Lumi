@@ -1,5 +1,5 @@
-import * as SecureStore from "expo-secure-store";
 import * as Notifications from "expo-notifications";
+import * as SecureStore from "expo-secure-store";
 
 // ─── Daily reminder ────────────────────────────────────────────────────────
 
@@ -12,7 +12,11 @@ export interface ReminderSettings {
   message?: string;
 }
 
-const DEFAULT_SETTINGS: ReminderSettings = { enabled: false, hour: 20, minute: 0 };
+const DEFAULT_SETTINGS: ReminderSettings = {
+  enabled: false,
+  hour: 20,
+  minute: 0,
+};
 
 export async function getReminderSettings(): Promise<ReminderSettings> {
   try {
@@ -25,9 +29,9 @@ export async function getReminderSettings(): Promise<ReminderSettings> {
 
 export async function requestNotificationPermission(): Promise<boolean> {
   const { status: existing } = await Notifications.getPermissionsAsync();
-  if (existing === "granted") return true;
+  if (existing === Notifications.PermissionStatus.GRANTED) return true;
   const { status } = await Notifications.requestPermissionsAsync();
-  return status === "granted";
+  return status === Notifications.PermissionStatus.GRANTED;
 }
 
 // Daily reminder fires every 3h: 9h, 12h, 15h, 18h, 21h
@@ -51,25 +55,31 @@ const DAILY_REMINDER_MESSAGES = [
   "Sentiu algum sintoma hoje? Registre agora.",
 ];
 
-export async function saveReminderSettings(settings: ReminderSettings): Promise<void> {
+export async function saveReminderSettings(
+  settings: ReminderSettings,
+): Promise<void> {
   await SecureStore.setItemAsync(REMINDER_KEY, JSON.stringify(settings));
   // Cancel all previously scheduled slots
   await Promise.all(
     DAILY_REMINDER_HOURS.map((h) =>
-      Notifications.cancelScheduledNotificationAsync(`daily-reminder-${h}`).catch(() => undefined),
+      Notifications.cancelScheduledNotificationAsync(
+        `daily-reminder-${h}`,
+      ).catch(() => undefined),
     ),
   );
   if (settings.enabled) {
     const customMessage = settings.message?.trim();
     // Shuffle messages so each slot gets a different one
-    const shuffled = [...DAILY_REMINDER_MESSAGES].sort(() => Math.random() - 0.5);
+    const shuffled = [...DAILY_REMINDER_MESSAGES].sort(
+      () => Math.random() - 0.5,
+    );
     await Promise.all(
       DAILY_REMINDER_HOURS.map((h, i) =>
         Notifications.scheduleNotificationAsync({
           identifier: `daily-reminder-${h}`,
           content: {
             title: "Lumi",
-            body: customMessage ?? (shuffled[i % shuffled.length] as string),
+            body: customMessage ?? shuffled[i % shuffled.length] ?? "",
           },
           trigger: {
             type: Notifications.SchedulableTriggerInputTypes.DAILY,
@@ -93,7 +103,11 @@ export interface PillReminderSettings {
   message?: string;
 }
 
-const DEFAULT_PILL: PillReminderSettings = { enabled: false, hour: 8, minute: 0 };
+const DEFAULT_PILL: PillReminderSettings = {
+  enabled: false,
+  hour: 8,
+  minute: 0,
+};
 
 export async function getPillReminderSettings(): Promise<PillReminderSettings> {
   try {
@@ -104,15 +118,19 @@ export async function getPillReminderSettings(): Promise<PillReminderSettings> {
   }
 }
 
-export async function savePillReminderSettings(settings: PillReminderSettings): Promise<void> {
+export async function savePillReminderSettings(
+  settings: PillReminderSettings,
+): Promise<void> {
   await SecureStore.setItemAsync(PILL_KEY, JSON.stringify(settings));
-  await Notifications.cancelScheduledNotificationAsync("pill-reminder").catch(() => undefined);
+  await Notifications.cancelScheduledNotificationAsync("pill-reminder").catch(
+    () => undefined,
+  );
   if (settings.enabled) {
     await Notifications.scheduleNotificationAsync({
       identifier: "pill-reminder",
       content: {
         title: "Lumi",
-        body: settings.message?.trim() || "Hora de tomar o anticoncepcional 💊",
+        body: settings.message?.trim() ?? "Hora de tomar o anticoncepcional 💊",
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.DAILY,
@@ -134,12 +152,18 @@ export interface PeriodReminderSettings {
   message?: string;
 }
 
-const DEFAULT_PERIOD: PeriodReminderSettings = { enabled: false, hour: 8, minute: 0 };
+const DEFAULT_PERIOD: PeriodReminderSettings = {
+  enabled: false,
+  hour: 8,
+  minute: 0,
+};
 
 export async function getPeriodReminderSettings(): Promise<PeriodReminderSettings> {
   try {
     const stored = await SecureStore.getItemAsync(PERIOD_KEY);
-    return stored ? (JSON.parse(stored) as PeriodReminderSettings) : DEFAULT_PERIOD;
+    return stored
+      ? (JSON.parse(stored) as PeriodReminderSettings)
+      : DEFAULT_PERIOD;
   } catch {
     return DEFAULT_PERIOD;
   }
@@ -151,7 +175,9 @@ export async function savePeriodReminderSettings(
   nextPeriodDate: string,
 ): Promise<void> {
   await SecureStore.setItemAsync(PERIOD_KEY, JSON.stringify(settings));
-  await Notifications.cancelScheduledNotificationAsync("period-reminder").catch(() => undefined);
+  await Notifications.cancelScheduledNotificationAsync("period-reminder").catch(
+    () => undefined,
+  );
   if (settings.enabled) {
     const triggerDate = new Date(
       `${nextPeriodDate}T${String(settings.hour).padStart(2, "0")}:${String(settings.minute).padStart(2, "0")}:00`,
@@ -161,7 +187,9 @@ export async function savePeriodReminderSettings(
         identifier: "period-reminder",
         content: {
           title: "Lumi",
-          body: settings.message?.trim() || "Sua menstruação está prevista para hoje 🌸",
+          body:
+            settings.message?.trim() ??
+            "Sua menstruação está prevista para hoje 🌸",
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.DATE,

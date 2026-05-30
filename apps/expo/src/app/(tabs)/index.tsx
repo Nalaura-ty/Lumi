@@ -14,7 +14,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 
 import { formatDate, getPhaseForDay, getPhaseInfo } from "~/data/cycle-utils";
-import { SELF_CARE_BY_PHASE } from "~/data/mock-data";
 import { useProfile } from "~/data/profile-context";
 import { queryClient, trpc } from "~/utils/api";
 import { updateAndroidWidget } from "~/utils/widget";
@@ -50,7 +49,7 @@ function CycleRing({
   size?: number;
 }) {
   const [selectedDay, setSelectedDay] = useState(dayOfCycle);
-  const animDay = useRef(new Animated.Value(dayOfCycle)).current;
+  const [animDay] = useState(() => new Animated.Value(dayOfCycle));
 
   // Sync when dayOfCycle changes (e.g. after logging a past day)
   useEffect(() => {
@@ -78,36 +77,44 @@ function CycleRing({
   // Mutable refs so PanResponder (created once) always calls latest logic
   const onStartRef = useRef(onInteractionStart);
   const onEndRef = useRef(onInteractionEnd);
-  onStartRef.current = onInteractionStart;
-  onEndRef.current = onInteractionEnd;
+
+  useEffect(() => {
+    onStartRef.current = onInteractionStart;
+    onEndRef.current = onInteractionEnd;
+  });
 
   // Re-assigned every render → PanResponder always calls the current version
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const resolveDayRef = useRef((_px: number, _py: number) => {});
-  resolveDayRef.current = (pageX: number, pageY: number) => {
-    if (!layoutRef.current) return;
-    const dx = pageX - (layoutRef.current.pageX + center);
-    const dy = pageY - (layoutRef.current.pageY + center);
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist < ringR - HIT || dist > ringR + HIT) return;
-    const angle = Math.atan2(dy, dx);
-    const frac = ((angle + Math.PI / 2) / (2 * Math.PI) + 1) % 1;
-    const day = Math.max(
-      1,
-      Math.min(cycleLength, Math.round(frac * cycleLength) || cycleLength),
-    );
-    animateToDay(day);
-  };
-
   const isNearRingRef = useRef((_px: number, _py: number): boolean => false);
-  isNearRingRef.current = (pageX: number, pageY: number): boolean => {
-    if (!layoutRef.current) return false;
-    const dx = pageX - (layoutRef.current.pageX + center);
-    const dy = pageY - (layoutRef.current.pageY + center);
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    return dist >= ringR - HIT && dist <= ringR + HIT;
-  };
 
-  const panResponder = useRef(
+  useEffect(() => {
+    resolveDayRef.current = (pageX: number, pageY: number) => {
+      if (!layoutRef.current) return;
+      const dx = pageX - (layoutRef.current.pageX + center);
+      const dy = pageY - (layoutRef.current.pageY + center);
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < ringR - HIT || dist > ringR + HIT) return;
+      const angle = Math.atan2(dy, dx);
+      const frac = ((angle + Math.PI / 2) / (2 * Math.PI) + 1) % 1;
+      const day = Math.max(
+        1,
+        Math.min(cycleLength, Math.round(frac * cycleLength) || cycleLength),
+      );
+      animateToDay(day);
+    };
+
+    isNearRingRef.current = (pageX: number, pageY: number): boolean => {
+      if (!layoutRef.current) return false;
+      const dx = pageX - (layoutRef.current.pageX + center);
+      const dy = pageY - (layoutRef.current.pageY + center);
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      return dist >= ringR - HIT && dist <= ringR + HIT;
+    };
+  });
+
+  // eslint-disable-next-line react-hooks/refs
+  const [panResponder] = useState(() =>
     PanResponder.create({
       // Only capture when touch STARTS near the ring — centre taps pass through
       onStartShouldSetPanResponder: (e) =>
@@ -123,7 +130,7 @@ function CycleRing({
       onPanResponderRelease: () => onEndRef.current?.(),
       onPanResponderTerminate: () => onEndRef.current?.(),
     }),
-  ).current;
+  );
 
   const displayPhase = getPhaseForDay(selectedDay, cycleLength, periodLength);
   const displayInfo = getPhaseInfo(displayPhase);
@@ -323,7 +330,6 @@ function CycleRing({
               {displayInfo.description.split(".")[0]}.
             </Text>
             {isToday &&
-              hasCurrentPhaseData &&
               displayPhase === "menstrual" &&
               (() => {
                 const remaining = Math.max(

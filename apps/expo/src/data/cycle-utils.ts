@@ -127,7 +127,7 @@ export function getCalendarDays(
     const diffMs = date.getTime() - periodStart.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const dayOfCycle =
-      ((diffDays % cycleLength) + cycleLength) % cycleLength + 1;
+      (((diffDays % cycleLength) + cycleLength) % cycleLength) + 1;
 
     const ovulationDay = cycleLength - 14;
     const phase = getPhaseForDay(dayOfCycle, cycleLength, periodLength);
@@ -140,7 +140,8 @@ export function getCalendarDays(
       phase,
       isPeriod: dayOfCycle <= periodLength,
       isOvulation: dayOfCycle === ovulationDay,
-      isFertile: dayOfCycle >= ovulationDay - 1 && dayOfCycle <= ovulationDay + 1,
+      isFertile:
+        dayOfCycle >= ovulationDay - 1 && dayOfCycle <= ovulationDay + 1,
       isToday: date.getTime() === today.getTime(),
     });
   }
@@ -150,17 +151,45 @@ export function getCalendarDays(
 
 export function formatDate(date: Date): string {
   const months = [
-    "janeiro", "fevereiro", "marco", "abril", "maio", "junho",
-    "julho", "agosto", "setembro", "outubro", "novembro", "dezembro",
+    "janeiro",
+    "fevereiro",
+    "marco",
+    "abril",
+    "maio",
+    "junho",
+    "julho",
+    "agosto",
+    "setembro",
+    "outubro",
+    "novembro",
+    "dezembro",
   ];
-  const days = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
+  const days = [
+    "domingo",
+    "segunda",
+    "terca",
+    "quarta",
+    "quinta",
+    "sexta",
+    "sabado",
+  ];
   return `${days[date.getDay()]}, ${date.getDate()} de ${months[date.getMonth()]}`;
 }
 
 export function formatMonthYear(year: number, month: number): string {
   const months = [
-    "Janeiro", "Fevereiro", "Marco", "Abril", "Maio", "Junho",
-    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+    "Janeiro",
+    "Fevereiro",
+    "Marco",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
   ];
   return `${months[month]} ${year}`;
 }

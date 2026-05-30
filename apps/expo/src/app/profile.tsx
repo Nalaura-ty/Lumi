@@ -43,9 +43,9 @@ import {
 function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "?";
-  if (parts.length === 1) return (parts[0]![0] ?? "").toUpperCase();
+  if (parts.length === 1) return (parts[0]?.[0] ?? "").toUpperCase();
   return (
-    (parts[0]![0] ?? "") + (parts[parts.length - 1]![0] ?? "")
+    (parts[0]?.[0] ?? "") + (parts[parts.length - 1]?.[0] ?? "")
   ).toUpperCase();
 }
 
@@ -1115,7 +1115,7 @@ export default function ProfileScreen() {
     );
   };
 
-  const handleExportPDF = async () => {
+  const _handleExportPDF = async () => {
     const logs = logsQuery.data ?? [];
     if (logs.length === 0) {
       Alert.alert("Sem dados", "Você não possui registros para exportar.");
@@ -1226,7 +1226,7 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleExportData = async () => {
+  const _handleExportData = async () => {
     const logs = logsQuery.data ?? [];
     if (logs.length === 0) {
       Alert.alert("Sem dados", "Você não possui registros para exportar.");

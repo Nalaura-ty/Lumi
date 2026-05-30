@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   Animated,
   Pressable,
@@ -7,9 +7,12 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import type { ProfileMode } from "~/data/profile-context";
@@ -96,7 +99,11 @@ function StepDots({ current }: { current: number }) {
               width: active ? 20 : 6,
               height: 6,
               borderRadius: 3,
-              backgroundColor: active ? "#8B7EC8" : past ? "#C4B8E8" : "#E5E0F5",
+              backgroundColor: active
+                ? "#8B7EC8"
+                : past
+                  ? "#C4B8E8"
+                  : "#E5E0F5",
             }}
           />
         );
@@ -105,13 +112,7 @@ function StepDots({ current }: { current: number }) {
   );
 }
 
-function StepHeader({
-  step,
-  onBack,
-}: {
-  step: number;
-  onBack: () => void;
-}) {
+function StepHeader({ step, onBack }: { step: number; onBack: () => void }) {
   return (
     <View
       style={{
@@ -176,8 +177,9 @@ function PrimaryButton({
         elevation: disabled ? 0 : 8,
       }}
     >
-      <Text style={{ color: "white", fontSize: 16, fontWeight: "700" }}>{label}</Text>
-     
+      <Text style={{ color: "white", fontSize: 16, fontWeight: "700" }}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
@@ -201,7 +203,15 @@ function FieldInput({
 }) {
   return (
     <View>
-      <Text style={{ fontSize: 12, fontWeight: "700", color: "#9088A8", letterSpacing: 0.8, marginBottom: 8 }}>
+      <Text
+        style={{
+          fontSize: 12,
+          fontWeight: "700",
+          color: "#9088A8",
+          letterSpacing: 0.8,
+          marginBottom: 8,
+        }}
+      >
         {label.toUpperCase()}
       </Text>
       <View
@@ -272,7 +282,14 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
         />
 
         {/* Logo area */}
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", gap: 16 }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 16,
+          }}
+        >
           <View
             style={{
               width: 88,
@@ -289,10 +306,24 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
           </View>
 
           <View style={{ alignItems: "center", gap: 8 }}>
-            <Text style={{ color: "white", fontSize: 44, fontWeight: "900", letterSpacing: -1.5 }}>
+            <Text
+              style={{
+                color: "white",
+                fontSize: 44,
+                fontWeight: "900",
+                letterSpacing: -1.5,
+              }}
+            >
               Lumi
             </Text>
-            <Text style={{ color: "rgba(255,255,255,0.45)", fontSize: 16, textAlign: "center", lineHeight: 24 }}>
+            <Text
+              style={{
+                color: "rgba(255,255,255,0.45)",
+                fontSize: 16,
+                textAlign: "center",
+                lineHeight: 24,
+              }}
+            >
               Sua saúde feminina,{"\n"}com cuidado e inteligência
             </Text>
           </View>
@@ -301,9 +332,21 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
         {/* Features */}
         <View style={{ gap: 12, marginBottom: 24 }}>
           {[
-            { icon: "water-outline" as const, label: "Ciclo menstrual", desc: "Previsões e acompanhamento" },
-            { icon: "heart-outline" as const, label: "Bem-estar", desc: "Humor, sono e sintomas" },
-            { icon: "leaf-outline" as const, label: "Autocuidado", desc: "Rituais e afirmações" },
+            {
+              icon: "water-outline" as const,
+              label: "Ciclo menstrual",
+              desc: "Previsões e acompanhamento",
+            },
+            {
+              icon: "heart-outline" as const,
+              label: "Bem-estar",
+              desc: "Humor, sono e sintomas",
+            },
+            {
+              icon: "leaf-outline" as const,
+              label: "Autocuidado",
+              desc: "Rituais e afirmações",
+            },
           ].map((f) => (
             <View
               key={f.icon}
@@ -331,8 +374,20 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
                 <Ionicons name={f.icon} size={17} color="#9B8FCA" />
               </View>
               <View>
-                <Text style={{ color: "white", fontSize: 13, fontWeight: "700" }}>{f.label}</Text>
-                <Text style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, marginTop: 1 }}>{f.desc}</Text>
+                <Text
+                  style={{ color: "white", fontSize: 13, fontWeight: "700" }}
+                >
+                  {f.label}
+                </Text>
+                <Text
+                  style={{
+                    color: "rgba(255,255,255,0.4)",
+                    fontSize: 11,
+                    marginTop: 1,
+                  }}
+                >
+                  {f.desc}
+                </Text>
               </View>
             </View>
           ))}
@@ -368,7 +423,8 @@ function StepMode({
       id: "cycle",
       label: "Ciclo Menstrual",
       description: "Acompanhe e preveja seu ciclo",
-      detail: "Ideal para quem quer entender melhor seu corpo, fertilidade e bem-estar ao longo do mês.",
+      detail:
+        "Ideal para quem quer entender melhor seu corpo, fertilidade e bem-estar ao longo do mês.",
       icon: "water-outline",
       color: "#9B8FCA",
       bg: "#F0EDFB",
@@ -377,7 +433,8 @@ function StepMode({
       id: "perimenopause",
       label: "Perimenopausa",
       description: "Suporte para a transicao hormonal",
-      detail: "Para quem está vivenciando mudanças no ciclo, ondas de calor e outras transformações do corpo.",
+      detail:
+        "Para quem está vivenciando mudanças no ciclo, ondas de calor e outras transformações do corpo.",
       icon: "flame-outline",
       color: "#B57BAC",
       bg: "#F9EEF7",
@@ -387,7 +444,14 @@ function StepMode({
   return (
     <View style={{ flex: 1 }}>
       <View style={{ marginBottom: 28 }}>
-        <Text style={{ fontSize: 26, fontWeight: "900", color: "#1E1830", lineHeight: 34 }}>
+        <Text
+          style={{
+            fontSize: 26,
+            fontWeight: "900",
+            color: "#1E1830",
+            lineHeight: 34,
+          }}
+        >
           Como podemos{"\n"}te ajudar?
         </Text>
         <Text style={{ fontSize: 15, color: "#9088A8", marginTop: 8 }}>
@@ -415,7 +479,12 @@ function StepMode({
               }}
             >
               {/* Colored top strip */}
-              <View style={{ height: 4, backgroundColor: active ? m.color : "#EDE8F6" }} />
+              <View
+                style={{
+                  height: 4,
+                  backgroundColor: active ? m.color : "#EDE8F6",
+                }}
+              />
 
               <View
                 style={{
@@ -437,19 +506,55 @@ function StepMode({
                     flexShrink: 0,
                   }}
                 >
-                  <Ionicons name={m.icon} size={24} color={active ? "white" : m.color} />
+                  <Ionicons
+                    name={m.icon}
+                    size={24}
+                    color={active ? "white" : m.color}
+                  />
                 </View>
                 <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                    <Text style={{ fontSize: 17, fontWeight: "800", color: active ? "white" : "#1E1830" }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 8,
+                      marginBottom: 4,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 17,
+                        fontWeight: "800",
+                        color: active ? "white" : "#1E1830",
+                      }}
+                    >
                       {m.label}
                     </Text>
-                    {active && <Ionicons name="checkmark-circle" size={18} color="rgba(255,255,255,0.9)" />}
+                    {active && (
+                      <Ionicons
+                        name="checkmark-circle"
+                        size={18}
+                        color="rgba(255,255,255,0.9)"
+                      />
+                    )}
                   </View>
-                  <Text style={{ fontSize: 13, fontWeight: "600", color: active ? "rgba(255,255,255,0.8)" : m.color, marginBottom: 6 }}>
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontWeight: "600",
+                      color: active ? "rgba(255,255,255,0.8)" : m.color,
+                      marginBottom: 6,
+                    }}
+                  >
                     {m.description}
                   </Text>
-                  <Text style={{ fontSize: 12, color: active ? "rgba(255,255,255,0.6)" : "#9088A8", lineHeight: 18 }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: active ? "rgba(255,255,255,0.6)" : "#9088A8",
+                      lineHeight: 18,
+                    }}
+                  >
                     {m.detail}
                   </Text>
                 </View>
@@ -484,7 +589,14 @@ function StepPersonal({
   return (
     <View style={{ flex: 1 }}>
       <View style={{ marginBottom: 32 }}>
-        <Text style={{ fontSize: 26, fontWeight: "900", color: "#1E1830", lineHeight: 34 }}>
+        <Text
+          style={{
+            fontSize: 26,
+            fontWeight: "900",
+            color: "#1E1830",
+            lineHeight: 34,
+          }}
+        >
           Sobre voce
         </Text>
         <Text style={{ fontSize: 15, color: "#9088A8", marginTop: 8 }}>
@@ -510,7 +622,10 @@ function StepPersonal({
         />
       </View>
 
-      <PrimaryButton onPress={onNext} disabled={!name.trim() || birthYear.length < 4} />
+      <PrimaryButton
+        onPress={onNext}
+        disabled={!name.trim() || birthYear.length < 4}
+      />
     </View>
   );
 }
@@ -545,13 +660,28 @@ function StepCycleInfo({
   const [periSymptoms, setPeriSymptoms] = useState<Set<string>>(new Set());
   const dontRemember = lastPeriodMonth === -1 && lastPeriodDay === 0;
   const canContinue = isPeri
-    ? (dontRemember || (lastPeriodMonth !== null && lastPeriodMonth >= 0 && lastPeriodDay !== null && lastPeriodDay > 0))
-    : (dontRemember || (lastPeriodMonth !== null && lastPeriodMonth >= 0 && lastPeriodDay !== null && lastPeriodDay > 0));
+    ? dontRemember ||
+      (lastPeriodMonth !== null &&
+        lastPeriodMonth >= 0 &&
+        lastPeriodDay !== null &&
+        lastPeriodDay > 0)
+    : dontRemember ||
+      (lastPeriodMonth !== null &&
+        lastPeriodMonth >= 0 &&
+        lastPeriodDay !== null &&
+        lastPeriodDay > 0);
 
   return (
     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
       <View style={{ marginBottom: 28 }}>
-        <Text style={{ fontSize: 26, fontWeight: "900", color: "#1E1830", lineHeight: 34 }}>
+        <Text
+          style={{
+            fontSize: 26,
+            fontWeight: "900",
+            color: "#1E1830",
+            lineHeight: 34,
+          }}
+        >
           {isPeri ? "Historico menstrual" : "Seu ciclo"}
         </Text>
         <Text style={{ fontSize: 15, color: "#9088A8", marginTop: 8 }}>
@@ -572,12 +702,24 @@ function StepCycleInfo({
             borderColor: "#EDE8F6",
           }}
         >
-          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 16,
+            }}
+          >
             <Text style={{ fontSize: 14, fontWeight: "700", color: "#1E1830" }}>
-              {isPeri ? "Última menstruação (aprox.)" : "Início do último período"}
+              {isPeri
+                ? "Última menstruação (aprox.)"
+                : "Início do último período"}
             </Text>
             <Pressable
-              onPress={() => { onMonthChange(-1); onDayChange(0); }}
+              onPress={() => {
+                onMonthChange(-1);
+                onDayChange(0);
+              }}
               style={{
                 paddingHorizontal: 12,
                 paddingVertical: 6,
@@ -585,23 +727,46 @@ function StepCycleInfo({
                 backgroundColor: dontRemember ? "#8B7EC8" : "#F0EDFB",
               }}
             >
-              <Text style={{ fontSize: 11, fontWeight: "700", color: dontRemember ? "white" : "#8B7EC8" }}>
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: "700",
+                  color: dontRemember ? "white" : "#8B7EC8",
+                }}
+              >
                 Nao lembro
               </Text>
             </Pressable>
           </View>
 
           {dontRemember ? (
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 8 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                paddingVertical: 8,
+              }}
+            >
               <Ionicons name="checkmark-circle" size={20} color="#8B7EC8" />
-              <Text style={{ fontSize: 14, color: "#8B7EC8", fontWeight: "600" }}>
+              <Text
+                style={{ fontSize: 14, color: "#8B7EC8", fontWeight: "600" }}
+              >
                 Sem problema, podemos ajustar depois.
               </Text>
             </View>
           ) : (
             <View style={{ flexDirection: "row", gap: 12 }}>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 11, fontWeight: "700", color: "#9088A8", letterSpacing: 0.5, marginBottom: 8 }}>
+                <Text
+                  style={{
+                    fontSize: 11,
+                    fontWeight: "700",
+                    color: "#9088A8",
+                    letterSpacing: 0.5,
+                    marginBottom: 8,
+                  }}
+                >
                   MES (1–12)
                 </Text>
                 <View
@@ -609,14 +774,24 @@ function StepCycleInfo({
                     backgroundColor: "#F8F7FD",
                     borderRadius: 14,
                     borderWidth: 1.5,
-                    borderColor: lastPeriodMonth !== null && lastPeriodMonth >= 0 ? "#8B7EC8" : "#E8E2F5",
+                    borderColor:
+                      lastPeriodMonth !== null && lastPeriodMonth >= 0
+                        ? "#8B7EC8"
+                        : "#E8E2F5",
                     paddingHorizontal: 14,
                   }}
                 >
                   <TextInput
-                    value={lastPeriodMonth !== null && lastPeriodMonth >= 0 ? String(lastPeriodMonth + 1) : ""}
+                    value={
+                      lastPeriodMonth !== null && lastPeriodMonth >= 0
+                        ? String(lastPeriodMonth + 1)
+                        : ""
+                    }
                     onChangeText={(v) => {
-                      if (v === "") { onMonthChange(-2); return; }
+                      if (v === "") {
+                        onMonthChange(-2);
+                        return;
+                      }
                       const n = parseInt(v, 10);
                       if (!isNaN(n) && n >= 1 && n <= 12) onMonthChange(n - 1);
                     }}
@@ -624,12 +799,24 @@ function StepCycleInfo({
                     placeholderTextColor="#C0B8D8"
                     keyboardType="number-pad"
                     maxLength={2}
-                    style={{ fontSize: 17, color: "#1E1830", paddingVertical: 13 }}
+                    style={{
+                      fontSize: 17,
+                      color: "#1E1830",
+                      paddingVertical: 13,
+                    }}
                   />
                 </View>
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 11, fontWeight: "700", color: "#9088A8", letterSpacing: 0.5, marginBottom: 8 }}>
+                <Text
+                  style={{
+                    fontSize: 11,
+                    fontWeight: "700",
+                    color: "#9088A8",
+                    letterSpacing: 0.5,
+                    marginBottom: 8,
+                  }}
+                >
                   DIA (1–31)
                 </Text>
                 <View
@@ -637,14 +824,24 @@ function StepCycleInfo({
                     backgroundColor: "#F8F7FD",
                     borderRadius: 14,
                     borderWidth: 1.5,
-                    borderColor: lastPeriodDay !== null && lastPeriodDay > 0 ? "#8B7EC8" : "#E8E2F5",
+                    borderColor:
+                      lastPeriodDay !== null && lastPeriodDay > 0
+                        ? "#8B7EC8"
+                        : "#E8E2F5",
                     paddingHorizontal: 14,
                   }}
                 >
                   <TextInput
-                    value={lastPeriodDay !== null && lastPeriodDay > 0 ? String(lastPeriodDay) : ""}
+                    value={
+                      lastPeriodDay !== null && lastPeriodDay > 0
+                        ? String(lastPeriodDay)
+                        : ""
+                    }
                     onChangeText={(v) => {
-                      if (v === "") { onDayChange(-1); return; }
+                      if (v === "") {
+                        onDayChange(-1);
+                        return;
+                      }
                       const n = parseInt(v, 10);
                       if (!isNaN(n) && n >= 1 && n <= 31) onDayChange(n);
                     }}
@@ -652,7 +849,11 @@ function StepCycleInfo({
                     placeholderTextColor="#C0B8D8"
                     keyboardType="number-pad"
                     maxLength={2}
-                    style={{ fontSize: 17, color: "#1E1830", paddingVertical: 13 }}
+                    style={{
+                      fontSize: 17,
+                      color: "#1E1830",
+                      paddingVertical: 13,
+                    }}
                   />
                 </View>
               </View>
@@ -672,15 +873,38 @@ function StepCycleInfo({
                 borderColor: "#EDE8F6",
               }}
             >
-              <Text style={{ fontSize: 14, fontWeight: "700", color: "#1E1830", marginBottom: 14 }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: "700",
+                  color: "#1E1830",
+                  marginBottom: 14,
+                }}
+              >
                 Como estao seus ciclos atualmente?
               </Text>
               <View style={{ gap: 10 }}>
                 {[
-                  { id: "irregular", label: "Irregulares (adiantam ou atrasam muito)", icon: "shuffle-outline" as const },
-                  { id: "spaced", label: "Muito espacados (a cada 2–3 meses)", icon: "calendar-outline" as const },
-                  { id: "stopped_less1", label: "Parei ha menos de 1 ano", icon: "pause-circle-outline" as const },
-                  { id: "stopped_more1", label: "Parei ha mais de 1 ano", icon: "stop-circle-outline" as const },
+                  {
+                    id: "irregular",
+                    label: "Irregulares (adiantam ou atrasam muito)",
+                    icon: "shuffle-outline" as const,
+                  },
+                  {
+                    id: "spaced",
+                    label: "Muito espacados (a cada 2–3 meses)",
+                    icon: "calendar-outline" as const,
+                  },
+                  {
+                    id: "stopped_less1",
+                    label: "Parei ha menos de 1 ano",
+                    icon: "pause-circle-outline" as const,
+                  },
+                  {
+                    id: "stopped_more1",
+                    label: "Parei ha mais de 1 ano",
+                    icon: "stop-circle-outline" as const,
+                  },
                 ].map((opt) => {
                   const active = periStatus === opt.id;
                   return (
@@ -698,11 +922,28 @@ function StepCycleInfo({
                         borderColor: active ? "#B57BAC" : "#E8E2F5",
                       }}
                     >
-                      <Ionicons name={opt.icon} size={18} color={active ? "white" : "#B57BAC"} />
-                      <Text style={{ fontSize: 13, fontWeight: "600", color: active ? "white" : "#2E2848", flex: 1 }}>
+                      <Ionicons
+                        name={opt.icon}
+                        size={18}
+                        color={active ? "white" : "#B57BAC"}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 13,
+                          fontWeight: "600",
+                          color: active ? "white" : "#2E2848",
+                          flex: 1,
+                        }}
+                      >
                         {opt.label}
                       </Text>
-                      {active && <Ionicons name="checkmark-circle" size={18} color="white" />}
+                      {active && (
+                        <Ionicons
+                          name="checkmark-circle"
+                          size={18}
+                          color="white"
+                        />
+                      )}
                     </Pressable>
                   );
                 })}
@@ -719,27 +960,45 @@ function StepCycleInfo({
                 borderColor: "#EDE8F6",
               }}
             >
-              <Text style={{ fontSize: 14, fontWeight: "700", color: "#1E1830", marginBottom: 4 }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: "700",
+                  color: "#1E1830",
+                  marginBottom: 4,
+                }}
+              >
                 Quais sintomas você tem sentido?
               </Text>
-              <Text style={{ fontSize: 12, color: "#9088A8", marginBottom: 14 }}>
+              <Text
+                style={{ fontSize: 12, color: "#9088A8", marginBottom: 14 }}
+              >
                 Selecione todos que se aplicam.
               </Text>
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
                 {[
-                  "Ondas de calor", "Suor noturno", "Insônia",
-                  "Humor instável", "Ansiedade", "Secura vaginal",
-                  "Neblina mental", "Palpitações", "Dor articular",
+                  "Ondas de calor",
+                  "Suor noturno",
+                  "Insônia",
+                  "Humor instável",
+                  "Ansiedade",
+                  "Secura vaginal",
+                  "Neblina mental",
+                  "Palpitações",
+                  "Dor articular",
                 ].map((s) => {
                   const active = periSymptoms.has(s);
                   return (
                     <Pressable
                       key={s}
-                      onPress={() => setPeriSymptoms(prev => {
-                        const next = new Set(prev);
-                        if (next.has(s)) next.delete(s); else next.add(s);
-                        return next;
-                      })}
+                      onPress={() =>
+                        setPeriSymptoms((prev) => {
+                          const next = new Set(prev);
+                          if (next.has(s)) next.delete(s);
+                          else next.add(s);
+                          return next;
+                        })
+                      }
                       style={{
                         paddingHorizontal: 14,
                         paddingVertical: 8,
@@ -749,7 +1008,13 @@ function StepCycleInfo({
                         borderColor: active ? "#B57BAC" : "#E8E2F5",
                       }}
                     >
-                      <Text style={{ fontSize: 12, fontWeight: "600", color: active ? "white" : "#5A5278" }}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontWeight: "600",
+                          color: active ? "white" : "#5A5278",
+                        }}
+                      >
                         {s}
                       </Text>
                     </Pressable>
@@ -774,10 +1039,24 @@ function StepCycleInfo({
                   borderColor: "#EDE8F6",
                 }}
               >
-                <Text style={{ fontSize: 13, fontWeight: "700", color: "#1E1830", marginBottom: 4 }}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: "700",
+                    color: "#1E1830",
+                    marginBottom: 4,
+                  }}
+                >
                   Duração do ciclo
                 </Text>
-                <Text style={{ fontSize: 11, color: "#9088A8", marginBottom: 14, lineHeight: 16 }}>
+                <Text
+                  style={{
+                    fontSize: 11,
+                    color: "#9088A8",
+                    marginBottom: 14,
+                    lineHeight: 16,
+                  }}
+                >
                   Do 1° dia até o início do próximo.
                 </Text>
                 <View
@@ -795,14 +1074,32 @@ function StepCycleInfo({
                     value={String(cycleLength)}
                     onChangeText={(v) => {
                       const n = parseInt(v, 10);
-                      if (v === "") { onCycleLengthChange(0); return; }
-                      if (!isNaN(n) && n >= 15 && n <= 60) onCycleLengthChange(n);
+                      if (v === "") {
+                        onCycleLengthChange(0);
+                        return;
+                      }
+                      if (!isNaN(n) && n >= 15 && n <= 60)
+                        onCycleLengthChange(n);
                     }}
                     keyboardType="number-pad"
                     maxLength={2}
-                    style={{ flex: 1, fontSize: 20, fontWeight: "700", color: "#1E1830", paddingVertical: 12 }}
+                    style={{
+                      flex: 1,
+                      fontSize: 20,
+                      fontWeight: "700",
+                      color: "#1E1830",
+                      paddingVertical: 12,
+                    }}
                   />
-                  <Text style={{ fontSize: 13, color: "#9088A8", fontWeight: "600" }}>dias</Text>
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      color: "#9088A8",
+                      fontWeight: "600",
+                    }}
+                  >
+                    dias
+                  </Text>
                 </View>
               </View>
 
@@ -816,10 +1113,24 @@ function StepCycleInfo({
                   borderColor: "#EDE8F6",
                 }}
               >
-                <Text style={{ fontSize: 13, fontWeight: "700", color: "#1E1830", marginBottom: 4 }}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: "700",
+                    color: "#1E1830",
+                    marginBottom: 4,
+                  }}
+                >
                   Duração da menstruação
                 </Text>
-                <Text style={{ fontSize: 11, color: "#9088A8", marginBottom: 14, lineHeight: 16 }}>
+                <Text
+                  style={{
+                    fontSize: 11,
+                    color: "#9088A8",
+                    marginBottom: 14,
+                    lineHeight: 16,
+                  }}
+                >
                   Por quantos dias você menstrua?
                 </Text>
                 <View
@@ -837,14 +1148,32 @@ function StepCycleInfo({
                     value={String(periodLength)}
                     onChangeText={(v) => {
                       const n = parseInt(v, 10);
-                      if (v === "") { onPeriodLengthChange(0); return; }
-                      if (!isNaN(n) && n >= 1 && n <= 14) onPeriodLengthChange(n);
+                      if (v === "") {
+                        onPeriodLengthChange(0);
+                        return;
+                      }
+                      if (!isNaN(n) && n >= 1 && n <= 14)
+                        onPeriodLengthChange(n);
                     }}
                     keyboardType="number-pad"
                     maxLength={2}
-                    style={{ flex: 1, fontSize: 20, fontWeight: "700", color: "#1E1830", paddingVertical: 12 }}
+                    style={{
+                      flex: 1,
+                      fontSize: 20,
+                      fontWeight: "700",
+                      color: "#1E1830",
+                      paddingVertical: 12,
+                    }}
                   />
-                  <Text style={{ fontSize: 13, color: "#9088A8", fontWeight: "600" }}>dias</Text>
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      color: "#9088A8",
+                      fontWeight: "600",
+                    }}
+                  >
+                    dias
+                  </Text>
                 </View>
               </View>
             </View>
@@ -880,19 +1209,36 @@ function GridSelect({
   onNext: () => void;
   minSelection?: number;
 }) {
-  const canContinue = minSelection === undefined || selected.size >= minSelection;
+  const canContinue =
+    minSelection === undefined || selected.size >= minSelection;
 
   return (
     <View style={{ flex: 1 }}>
       <View style={{ marginBottom: 24 }}>
-        <Text style={{ fontSize: 26, fontWeight: "900", color: "#1E1830", lineHeight: 34 }}>
+        <Text
+          style={{
+            fontSize: 26,
+            fontWeight: "900",
+            color: "#1E1830",
+            lineHeight: 34,
+          }}
+        >
           {title}
         </Text>
-        <Text style={{ fontSize: 15, color: "#9088A8", marginTop: 8 }}>{subtitle}</Text>
+        <Text style={{ fontSize: 15, color: "#9088A8", marginTop: 8 }}>
+          {subtitle}
+        </Text>
       </View>
 
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10, paddingBottom: 20 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: 10,
+            paddingBottom: 20,
+          }}
+        >
           {items.map((item) => {
             const active = selected.has(item.id);
             return (
@@ -921,13 +1267,17 @@ function GridSelect({
                     width: 32,
                     height: 32,
                     borderRadius: 16,
-                    backgroundColor: active ? "rgba(255,255,255,0.2)" : `${color}15`,
+                    backgroundColor: active
+                      ? "rgba(255,255,255,0.2)"
+                      : `${color}15`,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
                   <Ionicons
-                    name={item.icon as React.ComponentProps<typeof Ionicons>["name"]}
+                    name={
+                      item.icon as React.ComponentProps<typeof Ionicons>["name"]
+                    }
                     size={15}
                     color={active ? "white" : color}
                   />
@@ -1023,7 +1373,14 @@ function StepDone({
           <Ionicons name="checkmark-circle" size={42} color={modeColor} />
         </View>
 
-        <Text style={{ color: "white", fontSize: 26, fontWeight: "900", textAlign: "center" }}>
+        <Text
+          style={{
+            color: "white",
+            fontSize: 26,
+            fontWeight: "900",
+            textAlign: "center",
+          }}
+        >
           Tudo pronto{name ? `,\n${name}!` : "!"}
         </Text>
         <Text
@@ -1053,16 +1410,42 @@ function StepDone({
           borderColor: "#EDE8F6",
         }}
       >
-        <Text style={{ fontSize: 13, fontWeight: "700", color: "#9088A8", letterSpacing: 0.8 }}>
+        <Text
+          style={{
+            fontSize: 13,
+            fontWeight: "700",
+            color: "#9088A8",
+            letterSpacing: 0.8,
+          }}
+        >
           O QUE VOCÊ PODE FAZER
         </Text>
         {[
-          { icon: "calendar-outline" as const, text: "Ver previsões no calendário", color: "#9B8FCA" },
-          { icon: "create-outline" as const, text: "Registrar sintomas diariamente", color: "#7AAEC4" },
-          { icon: "bar-chart-outline" as const, text: "Acompanhar seus insights", color: "#B57BAC" },
-          { icon: "leaf-outline" as const, text: "Autocuidado personalizado por fase", color: "#9B8FCA" },
+          {
+            icon: "calendar-outline" as const,
+            text: "Ver previsões no calendário",
+            color: "#9B8FCA",
+          },
+          {
+            icon: "create-outline" as const,
+            text: "Registrar sintomas diariamente",
+            color: "#7AAEC4",
+          },
+          {
+            icon: "bar-chart-outline" as const,
+            text: "Acompanhar seus insights",
+            color: "#B57BAC",
+          },
+          {
+            icon: "leaf-outline" as const,
+            text: "Autocuidado personalizado por fase",
+            color: "#9B8FCA",
+          },
         ].map((item) => (
-          <View key={item.icon} style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
+          <View
+            key={item.icon}
+            style={{ flexDirection: "row", alignItems: "center", gap: 14 }}
+          >
             <View
               style={{
                 width: 38,
@@ -1075,7 +1458,16 @@ function StepDone({
             >
               <Ionicons name={item.icon} size={17} color={item.color} />
             </View>
-            <Text style={{ fontSize: 14, color: "#2E2848", fontWeight: "500", flex: 1 }}>{item.text}</Text>
+            <Text
+              style={{
+                fontSize: 14,
+                color: "#2E2848",
+                fontWeight: "500",
+                flex: 1,
+              }}
+            >
+              {item.text}
+            </Text>
             <Ionicons name="chevron-forward" size={14} color="#C0B8D8" />
           </View>
         ))}
@@ -1095,8 +1487,8 @@ function StepDone({
 
 export default function OnboardingScreen() {
   const [step, setStep] = useState(0);
-  const fadeAnim = useRef(new Animated.Value(1)).current;
-  const slideAnim = useRef(new Animated.Value(0)).current;
+  const [fadeAnim] = useState(() => new Animated.Value(1));
+  const [slideAnim] = useState(() => new Animated.Value(0));
   const queryClient = useQueryClient();
   const saveProfile = useMutation(trpc.profile.upsert.mutationOptions());
 
@@ -1116,14 +1508,30 @@ export default function OnboardingScreen() {
   const animateStep = (next: number) => {
     const forward = next > step;
     Animated.parallel([
-      Animated.timing(fadeAnim, { toValue: 0, duration: 120, useNativeDriver: true }),
-      Animated.timing(slideAnim, { toValue: forward ? -20 : 20, duration: 120, useNativeDriver: true }),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 120,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: forward ? -20 : 20,
+        duration: 120,
+        useNativeDriver: true,
+      }),
     ]).start(() => {
       setStep(next);
       slideAnim.setValue(forward ? 20 : -20);
       Animated.parallel([
-        Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
-        Animated.timing(slideAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
       ]).start();
     });
   };
@@ -1166,7 +1574,10 @@ export default function OnboardingScreen() {
     router.replace("/(tabs)");
   };
 
-  const toggleSet = (key: "healthConditions" | "contraception" | "goals", id: string) => {
+  const toggleSet = (
+    key: "healthConditions" | "contraception" | "goals",
+    id: string,
+  ) => {
     setData((prev) => {
       const next = new Set(prev[key]);
       if (next.has(id)) next.delete(id);
@@ -1178,13 +1589,18 @@ export default function OnboardingScreen() {
   const insets = useSafeAreaInsets();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: step === 0 ? "#16112E" : "#F8F7FD" }} edges={[]}>
-      <View style={{
-        flex: 1,
-        paddingHorizontal: step === 0 ? 0 : 24,
-        paddingTop: step === 0 ? 0 : insets.top + 16,
-        paddingBottom: step === 0 ? 0 : insets.bottom + 16,
-      }}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: step === 0 ? "#16112E" : "#F8F7FD" }}
+      edges={[]}
+    >
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: step === 0 ? 0 : 24,
+          paddingTop: step === 0 ? 0 : insets.top + 16,
+          paddingBottom: step === 0 ? 0 : insets.bottom + 16,
+        }}
+      >
         {step > 0 && step < TOTAL_STEPS - 1 && (
           <StepHeader step={step} onBack={goBack} />
         )}
@@ -1211,7 +1627,9 @@ export default function OnboardingScreen() {
               name={data.name}
               birthYear={data.birthYear}
               onNameChange={(v) => setData((p) => ({ ...p, name: v }))}
-              onBirthYearChange={(v) => setData((p) => ({ ...p, birthYear: v }))}
+              onBirthYearChange={(v) =>
+                setData((p) => ({ ...p, birthYear: v }))
+              }
               onNext={goNext}
             />
           )}
@@ -1223,10 +1641,16 @@ export default function OnboardingScreen() {
               lastPeriodDay={data.lastPeriodDay}
               cycleLength={data.cycleLength}
               periodLength={data.periodLength}
-              onMonthChange={(m) => setData((p) => ({ ...p, lastPeriodMonth: m }))}
+              onMonthChange={(m) =>
+                setData((p) => ({ ...p, lastPeriodMonth: m }))
+              }
               onDayChange={(d) => setData((p) => ({ ...p, lastPeriodDay: d }))}
-              onCycleLengthChange={(n) => setData((p) => ({ ...p, cycleLength: n }))}
-              onPeriodLengthChange={(n) => setData((p) => ({ ...p, periodLength: n }))}
+              onCycleLengthChange={(n) =>
+                setData((p) => ({ ...p, cycleLength: n }))
+              }
+              onPeriodLengthChange={(n) =>
+                setData((p) => ({ ...p, periodLength: n }))
+              }
               onNext={goNext}
             />
           )}
@@ -1238,12 +1662,30 @@ export default function OnboardingScreen() {
               items={
                 data.mode === "perimenopause"
                   ? [...HEALTH_CONDITIONS].sort((a, b) => {
-                      const periFirst = ["osteoporosis", "hypothyroid", "anxiety", "depression", "hypertension"];
-                      return (periFirst.includes(b.id) ? 1 : 0) - (periFirst.includes(a.id) ? 1 : 0);
+                      const periFirst = [
+                        "osteoporosis",
+                        "hypothyroid",
+                        "anxiety",
+                        "depression",
+                        "hypertension",
+                      ];
+                      return (
+                        (periFirst.includes(b.id) ? 1 : 0) -
+                        (periFirst.includes(a.id) ? 1 : 0)
+                      );
                     })
                   : [...HEALTH_CONDITIONS].sort((a, b) => {
-                      const cycleFirst = ["sop", "endometriosis", "fibroid", "anemia", "migraine"];
-                      return (cycleFirst.includes(b.id) ? 1 : 0) - (cycleFirst.includes(a.id) ? 1 : 0);
+                      const cycleFirst = [
+                        "sop",
+                        "endometriosis",
+                        "fibroid",
+                        "anemia",
+                        "migraine",
+                      ];
+                      return (
+                        (cycleFirst.includes(b.id) ? 1 : 0) -
+                        (cycleFirst.includes(a.id) ? 1 : 0)
+                      );
                     })
               }
               selected={data.healthConditions}
@@ -1276,12 +1718,30 @@ export default function OnboardingScreen() {
               items={
                 data.mode === "perimenopause"
                   ? [...GOALS].sort((a, b) => {
-                      const periFirst = ["menopause", "sleep", "symptoms", "mood", "exercise"];
-                      return (periFirst.includes(b.id) ? 1 : 0) - (periFirst.includes(a.id) ? 1 : 0);
+                      const periFirst = [
+                        "menopause",
+                        "sleep",
+                        "symptoms",
+                        "mood",
+                        "exercise",
+                      ];
+                      return (
+                        (periFirst.includes(b.id) ? 1 : 0) -
+                        (periFirst.includes(a.id) ? 1 : 0)
+                      );
                     })
                   : [...GOALS].sort((a, b) => {
-                      const cycleFirst = ["cycle", "symptoms", "mood", "fertility", "sleep"];
-                      return (cycleFirst.includes(b.id) ? 1 : 0) - (cycleFirst.includes(a.id) ? 1 : 0);
+                      const cycleFirst = [
+                        "cycle",
+                        "symptoms",
+                        "mood",
+                        "fertility",
+                        "sleep",
+                      ];
+                      return (
+                        (cycleFirst.includes(b.id) ? 1 : 0) -
+                        (cycleFirst.includes(a.id) ? 1 : 0)
+                      );
                     })
               }
               selected={data.goals}

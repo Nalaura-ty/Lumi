@@ -1,6 +1,10 @@
 import { QueryClient } from "@tanstack/react-query";
-import { TRPCClientError } from "@trpc/client";
-import { createTRPCClient, httpBatchLink, loggerLink } from "@trpc/client";
+import {
+  createTRPCClient,
+  httpBatchLink,
+  loggerLink,
+  TRPCClientError,
+} from "@trpc/client";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import superjson from "superjson";
 
@@ -13,12 +17,11 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: (failureCount, error) => {
-        if (
-          error instanceof TRPCClientError &&
-          (error.data?.code === "UNAUTHORIZED" ||
-            error.data?.code === "FORBIDDEN")
-        ) {
-          return false;
+        if (error instanceof TRPCClientError) {
+          const data = error.data as { code?: string } | undefined;
+          if (data?.code === "UNAUTHORIZED" || data?.code === "FORBIDDEN") {
+            return false;
+          }
         }
         return failureCount < 2;
       },

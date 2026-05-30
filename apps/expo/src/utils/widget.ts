@@ -11,7 +11,17 @@ export function updateAndroidWidget(params: {
   daysUntilPeriod: number;
 }) {
   if (Platform.OS !== "android") return;
-  NativeModules.LumiWidget?.updateWidget(
+  const lumiWidget = NativeModules.LumiWidget as
+    | {
+        updateWidget?: (
+          phase: string,
+          phaseName: string,
+          day: number,
+          daysUntil: number,
+        ) => void;
+      }
+    | undefined;
+  lumiWidget?.updateWidget?.(
     params.phase,
     params.phaseName,
     params.dayOfCycle,

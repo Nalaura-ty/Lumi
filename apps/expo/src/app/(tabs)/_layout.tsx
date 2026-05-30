@@ -1,6 +1,6 @@
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
 

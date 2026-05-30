@@ -10,8 +10,8 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 import { authClient } from "~/utils/auth";
 
@@ -38,7 +38,11 @@ export default function RegisterScreen() {
     }
     setLoading(true);
     try {
-      const { error } = await authClient.signUp.email({ email, password, name });
+      const { error } = await authClient.signUp.email({
+        email,
+        password,
+        name,
+      });
       if (error) {
         Alert.alert("Erro ao criar conta", error.message ?? "Tente novamente.");
       } else {
@@ -242,10 +246,7 @@ export default function RegisterScreen() {
                   paddingVertical: 15,
                 }}
               />
-              <Pressable
-                onPress={() => setShowPassword((v) => !v)}
-                hitSlop={8}
-              >
+              <Pressable onPress={() => setShowPassword((v) => !v)} hitSlop={8}>
                 <Ionicons
                   name={showPassword ? "eye-off-outline" : "eye-outline"}
                   size={18}
@@ -322,7 +323,12 @@ export default function RegisterScreen() {
             </View>
             {confirmPassword.length > 0 && confirmPassword !== password && (
               <Text
-                style={{ fontSize: 12, color: "#E8608A", marginTop: 6, marginLeft: 4 }}
+                style={{
+                  fontSize: 12,
+                  color: "#E8608A",
+                  marginTop: 6,
+                  marginLeft: 4,
+                }}
               >
                 As senhas não coincidem
               </Text>
@@ -362,7 +368,9 @@ export default function RegisterScreen() {
         </Pressable>
 
         {/* Login link */}
-        <View style={{ flexDirection: "row", justifyContent: "center", gap: 4 }}>
+        <View
+          style={{ flexDirection: "row", justifyContent: "center", gap: 4 }}
+        >
           <Text style={{ fontSize: 14, color: "#9088A8" }}>
             Já tem uma conta?
           </Text>

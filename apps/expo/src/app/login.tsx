@@ -9,9 +9,12 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import { Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { Link, router } from "expo-router";
 
 import { authClient } from "~/utils/auth";
 
@@ -74,7 +77,14 @@ export default function LoginScreen() {
             >
               <Ionicons name="moon" size={32} color="#9B8FCA" />
             </View>
-            <Text style={{ fontSize: 28, fontWeight: "900", color: "#1E1830", letterSpacing: -0.5 }}>
+            <Text
+              style={{
+                fontSize: 28,
+                fontWeight: "900",
+                color: "#1E1830",
+                letterSpacing: -0.5,
+              }}
+            >
               Bem-vinda de volta
             </Text>
             <Text style={{ fontSize: 15, color: "#9088A8", marginTop: 6 }}>
@@ -86,7 +96,15 @@ export default function LoginScreen() {
           <View style={{ gap: 14, marginBottom: 24 }}>
             {/* Email */}
             <View>
-              <Text style={{ fontSize: 12, fontWeight: "700", color: "#9088A8", letterSpacing: 0.8, marginBottom: 8 }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: "700",
+                  color: "#9088A8",
+                  letterSpacing: 0.8,
+                  marginBottom: 8,
+                }}
+              >
                 E-MAIL
               </Text>
               <View
@@ -101,7 +119,11 @@ export default function LoginScreen() {
                   gap: 10,
                 }}
               >
-                <Ionicons name="mail-outline" size={18} color={email ? "#8B7EC8" : "#C0B8D8"} />
+                <Ionicons
+                  name="mail-outline"
+                  size={18}
+                  color={email ? "#8B7EC8" : "#C0B8D8"}
+                />
                 <TextInput
                   value={email}
                   onChangeText={setEmail}
@@ -110,14 +132,27 @@ export default function LoginScreen() {
                   keyboardType="email-address"
                   autoCapitalize="none"
                   autoCorrect={false}
-                  style={{ flex: 1, fontSize: 16, color: "#1E1830", paddingVertical: 15 }}
+                  style={{
+                    flex: 1,
+                    fontSize: 16,
+                    color: "#1E1830",
+                    paddingVertical: 15,
+                  }}
                 />
               </View>
             </View>
 
             {/* Password */}
             <View>
-              <Text style={{ fontSize: 12, fontWeight: "700", color: "#9088A8", letterSpacing: 0.8, marginBottom: 8 }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: "700",
+                  color: "#9088A8",
+                  letterSpacing: 0.8,
+                  marginBottom: 8,
+                }}
+              >
                 SENHA
               </Text>
               <View
@@ -132,7 +167,11 @@ export default function LoginScreen() {
                   gap: 10,
                 }}
               >
-                <Ionicons name="lock-closed-outline" size={18} color={password ? "#8B7EC8" : "#C0B8D8"} />
+                <Ionicons
+                  name="lock-closed-outline"
+                  size={18}
+                  color={password ? "#8B7EC8" : "#C0B8D8"}
+                />
                 <TextInput
                   value={password}
                   onChangeText={setPassword}
@@ -140,9 +179,17 @@ export default function LoginScreen() {
                   placeholderTextColor="#C0B8D8"
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
-                  style={{ flex: 1, fontSize: 16, color: "#1E1830", paddingVertical: 15 }}
+                  style={{
+                    flex: 1,
+                    fontSize: 16,
+                    color: "#1E1830",
+                    paddingVertical: 15,
+                  }}
                 />
-                <Pressable onPress={() => setShowPassword((v) => !v)} hitSlop={8}>
+                <Pressable
+                  onPress={() => setShowPassword((v) => !v)}
+                  hitSlop={8}
+                >
                   <Ionicons
                     name={showPassword ? "eye-off-outline" : "eye-outline"}
                     size={18}
@@ -154,7 +201,9 @@ export default function LoginScreen() {
 
             {/* Forgot password */}
             <Pressable style={{ alignSelf: "flex-end" }}>
-              <Text style={{ fontSize: 13, fontWeight: "600", color: "#8B7EC8" }}>
+              <Text
+                style={{ fontSize: 13, fontWeight: "600", color: "#8B7EC8" }}
+              >
                 Esqueceu sua senha?
               </Text>
             </Pressable>
@@ -181,18 +230,30 @@ export default function LoginScreen() {
             }}
           >
             {loading ? (
-              <Text style={{ color: "white", fontSize: 16, fontWeight: "700" }}>Entrando...</Text>
+              <Text style={{ color: "white", fontSize: 16, fontWeight: "700" }}>
+                Entrando...
+              </Text>
             ) : (
-              <Text style={{ color: "white", fontSize: 16, fontWeight: "700" }}>Entrar</Text>
+              <Text style={{ color: "white", fontSize: 16, fontWeight: "700" }}>
+                Entrar
+              </Text>
             )}
           </Pressable>
 
           {/* Sign up link */}
-          <View style={{ flexDirection: "row", justifyContent: "center", gap: 4 }}>
-            <Text style={{ fontSize: 14, color: "#9088A8" }}>Nao tem uma conta?</Text>
+          <View
+            style={{ flexDirection: "row", justifyContent: "center", gap: 4 }}
+          >
+            <Text style={{ fontSize: 14, color: "#9088A8" }}>
+              Nao tem uma conta?
+            </Text>
             <Link href="/register" asChild>
               <Pressable>
-                <Text style={{ fontSize: 14, fontWeight: "700", color: "#8B7EC8" }}>Criar conta</Text>
+                <Text
+                  style={{ fontSize: 14, fontWeight: "700", color: "#8B7EC8" }}
+                >
+                  Criar conta
+                </Text>
               </Pressable>
             </Link>
           </View>

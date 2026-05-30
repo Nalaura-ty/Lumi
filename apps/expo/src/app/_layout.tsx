@@ -1,12 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { View } from "react-native";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { Stack, router, useSegments } from "expo-router";
+import { router, Stack, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { QueryClientProvider } from "@tanstack/react-query";
 
+import { ProfileProvider, useProfile } from "~/data/profile-context";
 import { queryClient } from "~/utils/api";
 import { authClient } from "~/utils/auth";
-import { ProfileProvider, useProfile } from "~/data/profile-context";
+
 import "../styles.css";
 
 const PUBLIC_SEGMENTS = new Set(["login", "register", "onboarding"]);
@@ -15,12 +16,6 @@ function AuthGatedStack() {
   const { data: session, isPending } = authClient.useSession();
   const { profile, isLoading: profileLoading } = useProfile();
   const segments = useSegments();
-  const initialCheckDone = useRef(false);
-
-  if (!isPending) {
-    initialCheckDone.current = true;
-  }
-
   // Redirect unauthenticated users to login
   useEffect(() => {
     if (isPending) return;
@@ -58,7 +53,7 @@ function AuthGatedStack() {
   }, [session, isPending, profile, profileLoading, segments]);
 
   // Block render only during the initial auth check
-  if (!initialCheckDone.current) {
+  if (isPending) {
     return <View style={{ flex: 1, backgroundColor: "#F8F7FD" }} />;
   }
 
@@ -71,7 +66,10 @@ function AuthGatedStack() {
   return (
     <Stack screenOptions={{ headerShown: false, animation: "fade" }}>
       <Stack.Screen name="login" options={{ animation: "fade" }} />
-      <Stack.Screen name="register" options={{ animation: "slide_from_bottom" }} />
+      <Stack.Screen
+        name="register"
+        options={{ animation: "slide_from_bottom" }}
+      />
       <Stack.Screen name="(tabs)" options={{ animation: "fade" }} />
       <Stack.Screen
         name="profile"
@@ -82,12 +80,15 @@ function AuthGatedStack() {
           headerStyle: { backgroundColor: "#FDF8FA" },
           presentation: "card",
           animation: "slide_from_right",
-          headerBackButtonDisplayMode:"minimal"
+          headerBackButtonDisplayMode: "minimal",
         }}
       />
       <Stack.Screen
         name="onboarding"
-        options={{ presentation: "fullScreenModal", animation: "fade_from_bottom" }}
+        options={{
+          presentation: "fullScreenModal",
+          animation: "fade_from_bottom",
+        }}
       />
     </Stack>
   );

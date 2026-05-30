@@ -8,10 +8,9 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-import { router, useLocalSearchParams } from "expo-router";
 
 import { formatDate, getPhaseInfo } from "~/data/cycle-utils";
 import { useProfile } from "~/data/profile-context";
@@ -25,18 +24,23 @@ function localDateStr(d = new Date()) {
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
-type ChipOpt = {
+interface ChipOpt {
   id: string;
   label: string;
   icon: React.ComponentProps<typeof Ionicons>["name"];
   color: string;
-};
+}
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 
 const FLOW_OPTIONS: ChipOpt[] = [
   { id: "none", label: "Nenhum", icon: "remove-outline", color: "#A098C0" },
-  { id: "spotting", label: "Manchas", icon: "ellipse-outline", color: "#C4B8E8" },
+  {
+    id: "spotting",
+    label: "Manchas",
+    icon: "ellipse-outline",
+    color: "#C4B8E8",
+  },
   { id: "light", label: "Leve", icon: "water-outline", color: "#A898D8" },
   { id: "medium", label: "Medio", icon: "water", color: "#9080C8" },
   { id: "heavy", label: "Intenso", icon: "water", color: "#7060B8" },
@@ -45,93 +49,303 @@ const FLOW_OPTIONS: ChipOpt[] = [
 const MOOD_OPTIONS: ChipOpt[] = [
   { id: "happy", label: "Feliz", icon: "happy-outline", color: "#7AAEC4" },
   { id: "calm", label: "Calma", icon: "leaf-outline", color: "#9B8FCA" },
-  { id: "neutral", label: "Ok", icon: "remove-circle-outline", color: "#A098C0" },
+  {
+    id: "neutral",
+    label: "Ok",
+    icon: "remove-circle-outline",
+    color: "#A098C0",
+  },
   { id: "sad", label: "Triste", icon: "sad-outline", color: "#9B8FCA" },
-  { id: "anxious", label: "Ansiosa", icon: "alert-circle-outline", color: "#7B9ECA" },
-  { id: "irritated", label: "Irritada", icon: "flash-outline", color: "#8B7EC8" },
+  {
+    id: "anxious",
+    label: "Ansiosa",
+    icon: "alert-circle-outline",
+    color: "#7B9ECA",
+  },
+  {
+    id: "irritated",
+    label: "Irritada",
+    icon: "flash-outline",
+    color: "#8B7EC8",
+  },
   { id: "tired", label: "Cansada", icon: "moon-outline", color: "#9088A8" },
-  { id: "energized", label: "Energizada", icon: "sunny-outline", color: "#C4A840" },
-  { id: "romantic", label: "Romantica", icon: "heart-outline", color: "#B57BAC" },
+  {
+    id: "energized",
+    label: "Energizada",
+    icon: "sunny-outline",
+    color: "#C4A840",
+  },
+  {
+    id: "romantic",
+    label: "Romantica",
+    icon: "heart-outline",
+    color: "#B57BAC",
+  },
   { id: "focused", label: "Focada", icon: "eye-outline", color: "#7060B8" },
 ];
 
 const PAIN_OPTIONS: ChipOpt[] = [
   { id: "cramps", label: "Colicas", icon: "body-outline", color: "#B57BAC" },
-  { id: "headache", label: "Dor de cabeca", icon: "medical-outline", color: "#9B8FCA" },
-  { id: "backpain", label: "Dor nas costas", icon: "accessibility-outline", color: "#8B7EC8" },
-  { id: "bloating", label: "Inchaco", icon: "ellipse-outline", color: "#A898D8" },
-  { id: "nausea", label: "Nausea", icon: "thermometer-outline", color: "#9080C8" },
-  { id: "vomiting", label: "Vomito", icon: "alert-circle-outline", color: "#7A6EB8" },
+  {
+    id: "headache",
+    label: "Dor de cabeca",
+    icon: "medical-outline",
+    color: "#9B8FCA",
+  },
+  {
+    id: "backpain",
+    label: "Dor nas costas",
+    icon: "accessibility-outline",
+    color: "#8B7EC8",
+  },
+  {
+    id: "bloating",
+    label: "Inchaco",
+    icon: "ellipse-outline",
+    color: "#A898D8",
+  },
+  {
+    id: "nausea",
+    label: "Nausea",
+    icon: "thermometer-outline",
+    color: "#9080C8",
+  },
+  {
+    id: "vomiting",
+    label: "Vomito",
+    icon: "alert-circle-outline",
+    color: "#7A6EB8",
+  },
   { id: "dizziness", label: "Tontura", icon: "sync-outline", color: "#B0A0C0" },
-  { id: "tender_breasts", label: "Seios sensiveis", icon: "heart-circle-outline", color: "#B57BAC" },
-  { id: "pelvic", label: "Dor pelvica", icon: "ellipse-outline", color: "#9B8FCA" },
+  {
+    id: "tender_breasts",
+    label: "Seios sensiveis",
+    icon: "heart-circle-outline",
+    color: "#B57BAC",
+  },
+  {
+    id: "pelvic",
+    label: "Dor pelvica",
+    icon: "ellipse-outline",
+    color: "#9B8FCA",
+  },
   { id: "insomnia", label: "Insônia", icon: "moon-outline", color: "#9088A8" },
-  { id: "fatigue", label: "Cansaco", icon: "battery-half-outline", color: "#A098C0" },
+  {
+    id: "fatigue",
+    label: "Cansaco",
+    icon: "battery-half-outline",
+    color: "#A098C0",
+  },
 ];
 
 const PMS_OPTIONS: ChipOpt[] = [
-  { id: "irritability", label: "Irritabilidade", icon: "flash-outline", color: "#9B8FCA" },
-  { id: "crying", label: "Choro facil", icon: "water-outline", color: "#B57BAC" },
-  { id: "sweet_cravings", label: "Desejo por doces", icon: "cafe-outline", color: "#C4A840" },
-  { id: "food_cravings", label: "Desejos alimentares", icon: "restaurant-outline", color: "#9B8FCA" },
-  { id: "concentration", label: "Dif. de foco", icon: "eye-off-outline", color: "#A098C0" },
-  { id: "sensitivity", label: "Sensibilidade", icon: "hand-left-outline", color: "#B57BAC" },
-  { id: "anxiety_pms", label: "Ansiedade", icon: "alert-circle-outline", color: "#8B7EC8" },
-  { id: "retention", label: "Retencao de liquido", icon: "water", color: "#9088A8" },
+  {
+    id: "irritability",
+    label: "Irritabilidade",
+    icon: "flash-outline",
+    color: "#9B8FCA",
+  },
+  {
+    id: "crying",
+    label: "Choro facil",
+    icon: "water-outline",
+    color: "#B57BAC",
+  },
+  {
+    id: "sweet_cravings",
+    label: "Desejo por doces",
+    icon: "cafe-outline",
+    color: "#C4A840",
+  },
+  {
+    id: "food_cravings",
+    label: "Desejos alimentares",
+    icon: "restaurant-outline",
+    color: "#9B8FCA",
+  },
+  {
+    id: "concentration",
+    label: "Dif. de foco",
+    icon: "eye-off-outline",
+    color: "#A098C0",
+  },
+  {
+    id: "sensitivity",
+    label: "Sensibilidade",
+    icon: "hand-left-outline",
+    color: "#B57BAC",
+  },
+  {
+    id: "anxiety_pms",
+    label: "Ansiedade",
+    icon: "alert-circle-outline",
+    color: "#8B7EC8",
+  },
+  {
+    id: "retention",
+    label: "Retencao de liquido",
+    icon: "water",
+    color: "#9088A8",
+  },
 ];
 
 const DISCHARGE_OPTIONS: ChipOpt[] = [
   { id: "none", label: "Nenhum", icon: "remove-outline", color: "#A098C0" },
-  { id: "normal", label: "Normal", icon: "checkmark-circle-outline", color: "#7AAEC4" },
+  {
+    id: "normal",
+    label: "Normal",
+    icon: "checkmark-circle-outline",
+    color: "#7AAEC4",
+  },
   { id: "sticky", label: "Pegajoso", icon: "ellipse", color: "#9B8FCA" },
   { id: "watery", label: "Aquoso", icon: "water-outline", color: "#7AAEC4" },
   { id: "creamy", label: "Cremoso", icon: "ellipse-outline", color: "#A898D8" },
-  { id: "ovulation", label: "Ovulação", icon: "star-outline", color: "#7060B8" },
+  {
+    id: "ovulation",
+    label: "Ovulação",
+    icon: "star-outline",
+    color: "#7060B8",
+  },
   { id: "unusual", label: "Incomum", icon: "alert-outline", color: "#B57BAC" },
 ];
 
 const SLEEP_QUALITY: ChipOpt[] = [
   { id: "great", label: "Otimo", icon: "star", color: "#7AAEC4" },
   { id: "good", label: "Bom", icon: "thumbs-up-outline", color: "#9B8FCA" },
-  { id: "fair", label: "Regular", icon: "remove-circle-outline", color: "#A098C0" },
+  {
+    id: "fair",
+    label: "Regular",
+    icon: "remove-circle-outline",
+    color: "#A098C0",
+  },
   { id: "poor", label: "Ruim", icon: "thumbs-down-outline", color: "#B57BAC" },
 ];
 
 const VITALITY_OPTIONS: ChipOpt[] = [
   { id: "high", label: "Alta", icon: "flash", color: "#C4A840" },
   { id: "good", label: "Boa", icon: "sunny-outline", color: "#7AAEC4" },
-  { id: "normal", label: "Normal", icon: "remove-circle-outline", color: "#9B8FCA" },
+  {
+    id: "normal",
+    label: "Normal",
+    icon: "remove-circle-outline",
+    color: "#9B8FCA",
+  },
   { id: "low", label: "Baixa", icon: "battery-half-outline", color: "#A098C0" },
-  { id: "exhausted", label: "Exausta", icon: "battery-dead-outline", color: "#B57BAC" },
+  {
+    id: "exhausted",
+    label: "Exausta",
+    icon: "battery-dead-outline",
+    color: "#B57BAC",
+  },
 ];
 
 const SEX_OPTIONS: ChipOpt[] = [
-  { id: "protected", label: "Protegida", icon: "shield-checkmark-outline", color: "#7AAEC4" },
-  { id: "unprotected", label: "Sem protecao", icon: "shield-outline", color: "#B57BAC" },
-  { id: "masturbation", label: "Masturbacao", icon: "heart-outline", color: "#9B8FCA" },
-  { id: "high_desire", label: "Alto desejo", icon: "flame-outline", color: "#C4A840" },
-  { id: "low_desire", label: "Baixo desejo", icon: "remove-circle-outline", color: "#A098C0" },
-  { id: "none", label: "Nenhuma", icon: "close-circle-outline", color: "#A098C0" },
+  {
+    id: "protected",
+    label: "Protegida",
+    icon: "shield-checkmark-outline",
+    color: "#7AAEC4",
+  },
+  {
+    id: "unprotected",
+    label: "Sem protecao",
+    icon: "shield-outline",
+    color: "#B57BAC",
+  },
+  {
+    id: "masturbation",
+    label: "Masturbacao",
+    icon: "heart-outline",
+    color: "#9B8FCA",
+  },
+  {
+    id: "high_desire",
+    label: "Alto desejo",
+    icon: "flame-outline",
+    color: "#C4A840",
+  },
+  {
+    id: "low_desire",
+    label: "Baixo desejo",
+    icon: "remove-circle-outline",
+    color: "#A098C0",
+  },
+  {
+    id: "none",
+    label: "Nenhuma",
+    icon: "close-circle-outline",
+    color: "#A098C0",
+  },
 ];
 
 const SKIN_OPTIONS: ChipOpt[] = [
   { id: "good", label: "Pele boa", icon: "happy-outline", color: "#7AAEC4" },
   { id: "oily", label: "Oleosa", icon: "water", color: "#9B8FCA" },
   { id: "dry", label: "Seca", icon: "leaf-outline", color: "#A898D8" },
-  { id: "acne_mild", label: "Acne leve", icon: "ellipse-outline", color: "#B57BAC" },
-  { id: "acne_severe", label: "Acne intensa", icon: "ellipse", color: "#8B7EC8" },
-  { id: "hair_loss", label: "Queda capilar", icon: "cut-outline", color: "#A098C0" },
-  { id: "hair_shine", label: "Cabelo bonito", icon: "star-outline", color: "#7AAEC4" },
-  { id: "sensitive_skin", label: "Pele sensivel", icon: "hand-right-outline", color: "#B57BAC" },
+  {
+    id: "acne_mild",
+    label: "Acne leve",
+    icon: "ellipse-outline",
+    color: "#B57BAC",
+  },
+  {
+    id: "acne_severe",
+    label: "Acne intensa",
+    icon: "ellipse",
+    color: "#8B7EC8",
+  },
+  {
+    id: "hair_loss",
+    label: "Queda capilar",
+    icon: "cut-outline",
+    color: "#A098C0",
+  },
+  {
+    id: "hair_shine",
+    label: "Cabelo bonito",
+    icon: "star-outline",
+    color: "#7AAEC4",
+  },
+  {
+    id: "sensitive_skin",
+    label: "Pele sensivel",
+    icon: "hand-right-outline",
+    color: "#B57BAC",
+  },
 ];
 
 const DIGESTION_OPTIONS: ChipOpt[] = [
-  { id: "normal", label: "Normal", icon: "checkmark-circle-outline", color: "#7AAEC4" },
-  { id: "constipation", label: "Prisao de ventre", icon: "hourglass-outline", color: "#9B8FCA" },
-  { id: "diarrhea", label: "Diarreia", icon: "arrow-down-outline", color: "#B57BAC" },
+  {
+    id: "normal",
+    label: "Normal",
+    icon: "checkmark-circle-outline",
+    color: "#7AAEC4",
+  },
+  {
+    id: "constipation",
+    label: "Prisao de ventre",
+    icon: "hourglass-outline",
+    color: "#9B8FCA",
+  },
+  {
+    id: "diarrhea",
+    label: "Diarreia",
+    icon: "arrow-down-outline",
+    color: "#B57BAC",
+  },
   { id: "gas", label: "Gases", icon: "cloud-outline", color: "#A098C0" },
-  { id: "appetite_up", label: "Apetite aumentado", icon: "add-circle-outline", color: "#7AAEC4" },
-  { id: "appetite_down", label: "Apetite reduzido", icon: "remove-circle-outline", color: "#A098C0" },
+  {
+    id: "appetite_up",
+    label: "Apetite aumentado",
+    icon: "add-circle-outline",
+    color: "#7AAEC4",
+  },
+  {
+    id: "appetite_down",
+    label: "Apetite reduzido",
+    icon: "remove-circle-outline",
+    color: "#A098C0",
+  },
   { id: "heartburn", label: "Azia", icon: "flame-outline", color: "#C4A840" },
 ];
 
@@ -139,64 +353,219 @@ const EXERCISE_OPTIONS: ChipOpt[] = [
   { id: "gym", label: "Academia", icon: "barbell-outline", color: "#9B8FCA" },
   { id: "running", label: "Corrida", icon: "walk-outline", color: "#7AAEC4" },
   { id: "yoga", label: "Yoga", icon: "body-outline", color: "#B57BAC" },
-  { id: "pilates", label: "Pilates", icon: "fitness-outline", color: "#A898D8" },
-  { id: "walk", label: "Caminhada", icon: "footsteps-outline", color: "#7AAEC4" },
+  {
+    id: "pilates",
+    label: "Pilates",
+    icon: "fitness-outline",
+    color: "#A898D8",
+  },
+  {
+    id: "walk",
+    label: "Caminhada",
+    icon: "footsteps-outline",
+    color: "#7AAEC4",
+  },
   { id: "swim", label: "Natacao", icon: "water-outline", color: "#7060B8" },
-  { id: "dance", label: "Danca", icon: "musical-notes-outline", color: "#C4A840" },
+  {
+    id: "dance",
+    label: "Danca",
+    icon: "musical-notes-outline",
+    color: "#C4A840",
+  },
   { id: "rest", label: "Descanso", icon: "moon-outline", color: "#9088A8" },
 ];
 
 const SOCIAL_OPTIONS: ChipOpt[] = [
   { id: "social", label: "Social", icon: "people-outline", color: "#7AAEC4" },
   { id: "homebody", label: "Em casa", icon: "home-outline", color: "#9B8FCA" },
-  { id: "work", label: "Trabalho intenso", icon: "briefcase-outline", color: "#8B7EC8" },
+  {
+    id: "work",
+    label: "Trabalho intenso",
+    icon: "briefcase-outline",
+    color: "#8B7EC8",
+  },
   { id: "party", label: "Festa", icon: "beer-outline", color: "#C4A840" },
   { id: "travel", label: "Viagem", icon: "airplane-outline", color: "#7AAEC4" },
-  { id: "leisure", label: "Lazer", icon: "game-controller-outline", color: "#9B8FCA" },
+  {
+    id: "leisure",
+    label: "Lazer",
+    icon: "game-controller-outline",
+    color: "#9B8FCA",
+  },
   { id: "stress", label: "Estresse", icon: "alert-outline", color: "#B57BAC" },
 ];
 
 const HEALTH_OPTIONS: ChipOpt[] = [
-  { id: "appointment", label: "Consulta medica", icon: "medical-outline", color: "#9B8FCA" },
-  { id: "exam", label: "Exame", icon: "document-text-outline", color: "#7AAEC4" },
-  { id: "medication", label: "Medicacao", icon: "medkit-outline", color: "#B57BAC" },
+  {
+    id: "appointment",
+    label: "Consulta medica",
+    icon: "medical-outline",
+    color: "#9B8FCA",
+  },
+  {
+    id: "exam",
+    label: "Exame",
+    icon: "document-text-outline",
+    color: "#7AAEC4",
+  },
+  {
+    id: "medication",
+    label: "Medicacao",
+    icon: "medkit-outline",
+    color: "#B57BAC",
+  },
   { id: "sick", label: "Doente", icon: "bandage-outline", color: "#A098C0" },
-  { id: "pregnancy_test", label: "Teste de gravidez", icon: "flask-outline", color: "#7060B8" },
-  { id: "supplement", label: "Suplemento", icon: "nutrition-outline", color: "#7AAEC4" },
+  {
+    id: "pregnancy_test",
+    label: "Teste de gravidez",
+    icon: "flask-outline",
+    color: "#7060B8",
+  },
+  {
+    id: "supplement",
+    label: "Suplemento",
+    icon: "nutrition-outline",
+    color: "#7AAEC4",
+  },
   { id: "vaccine", label: "Vacina", icon: "shield-outline", color: "#9B8FCA" },
 ];
 
 const CONTRACEPTION_OPTIONS: ChipOpt[] = [
   { id: "pill", label: "Pilula", icon: "ellipse-outline", color: "#9B8FCA" },
   { id: "iud", label: "DIU", icon: "medical-outline", color: "#7AAEC4" },
-  { id: "injection", label: "Injecao", icon: "fitness-outline", color: "#B57BAC" },
-  { id: "implant", label: "Implante", icon: "hardware-chip-outline", color: "#8B7EC8" },
+  {
+    id: "injection",
+    label: "Injecao",
+    icon: "fitness-outline",
+    color: "#B57BAC",
+  },
+  {
+    id: "implant",
+    label: "Implante",
+    icon: "hardware-chip-outline",
+    color: "#8B7EC8",
+  },
   { id: "patch", label: "Adesivo", icon: "square-outline", color: "#A898D8" },
-  { id: "ring", label: "Anel vaginal", icon: "radio-button-off-outline", color: "#9B8FCA" },
-  { id: "condom", label: "Preservativo", icon: "shield-checkmark-outline", color: "#7AAEC4" },
-  { id: "none", label: "Nenhum", icon: "close-circle-outline", color: "#A098C0" },
+  {
+    id: "ring",
+    label: "Anel vaginal",
+    icon: "radio-button-off-outline",
+    color: "#9B8FCA",
+  },
+  {
+    id: "condom",
+    label: "Preservativo",
+    icon: "shield-checkmark-outline",
+    color: "#7AAEC4",
+  },
+  {
+    id: "none",
+    label: "Nenhum",
+    icon: "close-circle-outline",
+    color: "#A098C0",
+  },
 ];
 
 const MENOPAUSE_OPTIONS: ChipOpt[] = [
-  { id: "hot_flash", label: "Onda de calor", icon: "flame-outline", color: "#C4A840" },
-  { id: "night_sweat", label: "Suor noturno", icon: "moon-outline", color: "#9B8FCA" },
-  { id: "vaginal_dry", label: "Secura vaginal", icon: "leaf-outline", color: "#B57BAC" },
-  { id: "mood_swing", label: "Humor instavel", icon: "swap-horizontal-outline", color: "#9B8FCA" },
-  { id: "irregular", label: "Ciclo irregular", icon: "shuffle-outline", color: "#A098C0" },
-  { id: "palpitation", label: "Palpitacao", icon: "heart-outline", color: "#B57BAC" },
-  { id: "joint_pain", label: "Dor articular", icon: "body-outline", color: "#A098C0" },
-  { id: "brain_fog", label: "Nevoa mental", icon: "cloud-outline", color: "#9088A8" },
+  {
+    id: "hot_flash",
+    label: "Onda de calor",
+    icon: "flame-outline",
+    color: "#C4A840",
+  },
+  {
+    id: "night_sweat",
+    label: "Suor noturno",
+    icon: "moon-outline",
+    color: "#9B8FCA",
+  },
+  {
+    id: "vaginal_dry",
+    label: "Secura vaginal",
+    icon: "leaf-outline",
+    color: "#B57BAC",
+  },
+  {
+    id: "mood_swing",
+    label: "Humor instavel",
+    icon: "swap-horizontal-outline",
+    color: "#9B8FCA",
+  },
+  {
+    id: "irregular",
+    label: "Ciclo irregular",
+    icon: "shuffle-outline",
+    color: "#A098C0",
+  },
+  {
+    id: "palpitation",
+    label: "Palpitacao",
+    icon: "heart-outline",
+    color: "#B57BAC",
+  },
+  {
+    id: "joint_pain",
+    label: "Dor articular",
+    icon: "body-outline",
+    color: "#A098C0",
+  },
+  {
+    id: "brain_fog",
+    label: "Nevoa mental",
+    icon: "cloud-outline",
+    color: "#9088A8",
+  },
 ];
 
 const PREGNANCY_OPTIONS: ChipOpt[] = [
-  { id: "morning_sick", label: "Enjoo matinal", icon: "thermometer-outline", color: "#9B8FCA" },
-  { id: "fetal_movement", label: "Movimentos fetais", icon: "heart-outline", color: "#B57BAC" },
-  { id: "backpain_preg", label: "Dor nas costas", icon: "body-outline", color: "#A898D8" },
-  { id: "swelling", label: "Inchaco", icon: "ellipse-outline", color: "#9B8FCA" },
-  { id: "heartburn_preg", label: "Azia", icon: "flame-outline", color: "#C4A840" },
-  { id: "fatigue_preg", label: "Cansaco intenso", icon: "battery-dead-outline", color: "#B57BAC" },
-  { id: "good_day", label: "Dia otimo", icon: "sunny-outline", color: "#7AAEC4" },
-  { id: "braxton", label: "Contracao Braxton", icon: "pulse-outline", color: "#9B8FCA" },
+  {
+    id: "morning_sick",
+    label: "Enjoo matinal",
+    icon: "thermometer-outline",
+    color: "#9B8FCA",
+  },
+  {
+    id: "fetal_movement",
+    label: "Movimentos fetais",
+    icon: "heart-outline",
+    color: "#B57BAC",
+  },
+  {
+    id: "backpain_preg",
+    label: "Dor nas costas",
+    icon: "body-outline",
+    color: "#A898D8",
+  },
+  {
+    id: "swelling",
+    label: "Inchaco",
+    icon: "ellipse-outline",
+    color: "#9B8FCA",
+  },
+  {
+    id: "heartburn_preg",
+    label: "Azia",
+    icon: "flame-outline",
+    color: "#C4A840",
+  },
+  {
+    id: "fatigue_preg",
+    label: "Cansaco intenso",
+    icon: "battery-dead-outline",
+    color: "#B57BAC",
+  },
+  {
+    id: "good_day",
+    label: "Dia otimo",
+    icon: "sunny-outline",
+    color: "#7AAEC4",
+  },
+  {
+    id: "braxton",
+    label: "Contracao Braxton",
+    icon: "pulse-outline",
+    color: "#9B8FCA",
+  },
 ];
 
 // ── Reusable components ───────────────────────────────────────────────────────
@@ -249,7 +618,7 @@ function MultiChips({
   options,
   selected,
   onToggle,
-  accentColor = "#8B7EC8",
+  accentColor: _accentColor = "#8B7EC8",
 }: {
   options: ChipOpt[];
   selected: Set<string>;
@@ -360,23 +729,34 @@ export default function LogScreen() {
 
   const { date: dateParam } = useLocalSearchParams<{ date?: string }>();
   const todayStr = localDateStr();
-  const effectiveDate = (typeof dateParam === "string" && dateParam) ? dateParam : todayStr;
+  const effectiveDate =
+    typeof dateParam === "string" && dateParam ? dateParam : todayStr;
   const isHistorical = effectiveDate !== todayStr;
 
-  const logQuery = useQuery(trpc.log.byDate.queryOptions({ date: effectiveDate }));
+  const logQuery = useQuery(
+    trpc.log.byDate.queryOptions({ date: effectiveDate }),
+  );
   const isEditing = !!logQuery.data;
 
   const saveLogMutation = useMutation({
     ...trpc.log.save.mutationOptions(),
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: trpc.log.history.queryKey({ days: 365 }) }),
-        queryClient.invalidateQueries({ queryKey: trpc.log.history.queryKey({ days: 180 }) }),
+        queryClient.invalidateQueries({
+          queryKey: trpc.log.history.queryKey({ days: 365 }),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: trpc.log.history.queryKey({ days: 180 }),
+        }),
         ...(!isHistorical
-          ? [queryClient.invalidateQueries({ queryKey: trpc.log.today.queryKey({ date: todayStr }) })]
+          ? [
+              queryClient.invalidateQueries({
+                queryKey: trpc.log.today.queryKey({ date: todayStr }),
+              }),
+            ]
           : []),
       ]);
-      router.replace(isHistorical ? "/(tabs)/calendar" : "/(tabs)/");
+      router.replace(isHistorical ? "/(tabs)/calendar" : "/(tabs)");
     },
     onError: () => {
       Alert.alert("Erro", "Nao foi possivel salvar o registro.");
@@ -405,30 +785,32 @@ export default function LogScreen() {
   const [notes, setNotes] = useState("");
 
   // Load existing log for the effective date
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     const d = logQuery.data;
     if (!d) return;
     if (d.flow) setFlow(d.flow);
-    if (d.moods?.length) setMoods(new Set(d.moods as string[]));
-    if (d.pains?.length) setPains(new Set(d.pains as string[]));
-    if (d.pms?.length) setPms(new Set(d.pms as string[]));
+    if (d.moods?.length) setMoods(new Set(d.moods));
+    if (d.pains?.length) setPains(new Set(d.pains));
+    if (d.pms?.length) setPms(new Set(d.pms));
     if (d.discharge) setDischarge(d.discharge);
     if (d.sleepQuality) setSleepQuality(d.sleepQuality);
     if (d.sleepHours) setSleepHours(d.sleepHours);
     if (d.vitality) setVitality(d.vitality);
-    if (d.sex?.length) setSex(new Set(d.sex as string[]));
-    if (d.skin?.length) setSkin(new Set(d.skin as string[]));
-    if (d.digestion?.length) setDigestion(new Set(d.digestion as string[]));
-    if (d.exercise?.length) setExercise(new Set(d.exercise as string[]));
-    if (d.social?.length) setSocial(new Set(d.social as string[]));
-    if (d.health?.length) setHealth(new Set(d.health as string[]));
+    if (d.sex?.length) setSex(new Set(d.sex));
+    if (d.skin?.length) setSkin(new Set(d.skin));
+    if (d.digestion?.length) setDigestion(new Set(d.digestion));
+    if (d.exercise?.length) setExercise(new Set(d.exercise));
+    if (d.social?.length) setSocial(new Set(d.social));
+    if (d.health?.length) setHealth(new Set(d.health));
     if (d.contraception?.length)
-      setContraception(new Set(d.contraception as string[]));
-    if (d.menopause?.length) setMenopause(new Set(d.menopause as string[]));
-    if (d.pregnancy?.length) setPregnancy(new Set(d.pregnancy as string[]));
+      setContraception(new Set(d.contraception));
+    if (d.menopause?.length) setMenopause(new Set(d.menopause));
+    if (d.pregnancy?.length) setPregnancy(new Set(d.pregnancy));
     if (d.weight) setWeight(String(d.weight));
     if (d.notes) setNotes(d.notes);
   }, [logQuery.data]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const toggleSet =
     (setter: React.Dispatch<React.SetStateAction<Set<string>>>) =>
@@ -475,11 +857,26 @@ export default function LogScreen() {
         <View style={{ paddingTop: 16, marginBottom: 20 }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
             <Text style={{ fontSize: 22, fontWeight: "800", color: "#1E1830" }}>
-              {isEditing ? "Editar registro" : isHistorical ? "Registrar dia" : "Registrar"}
+              {isEditing
+                ? "Editar registro"
+                : isHistorical
+                  ? "Registrar dia"
+                  : "Registrar"}
             </Text>
             {isEditing && !isHistorical && (
-              <View style={{ backgroundColor: "#EDE8FB", borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
-                <Text style={{ fontSize: 11, fontWeight: "600", color: "#8B7EC8" }}>hoje</Text>
+              <View
+                style={{
+                  backgroundColor: "#EDE8FB",
+                  borderRadius: 8,
+                  paddingHorizontal: 8,
+                  paddingVertical: 3,
+                }}
+              >
+                <Text
+                  style={{ fontSize: 11, fontWeight: "600", color: "#8B7EC8" }}
+                >
+                  hoje
+                </Text>
               </View>
             )}
           </View>
@@ -733,7 +1130,10 @@ export default function LogScreen() {
 
         {/* ── Anticoncepcao ── */}
         <SectionCard>
-          <SectionHeader title="Anticoncepcao" icon="shield-checkmark-outline" />
+          <SectionHeader
+            title="Anticoncepcao"
+            icon="shield-checkmark-outline"
+          />
           <MultiChips
             options={CONTRACEPTION_OPTIONS}
             selected={contraception}
@@ -743,7 +1143,10 @@ export default function LogScreen() {
 
         {/* ── Menopausa / Perimenopausa ── */}
         <SectionCard>
-          <SectionHeader title="Menopausa & Perimenopausa" icon="flame-outline" />
+          <SectionHeader
+            title="Menopausa & Perimenopausa"
+            icon="flame-outline"
+          />
           <MultiChips
             options={MENOPAUSE_OPTIONS}
             selected={menopause}
@@ -771,7 +1174,14 @@ export default function LogScreen() {
             }}
           >
             <Ionicons name="scale-outline" size={17} color="#8B7EC8" />
-            <Text style={{ fontSize: 15, fontWeight: "700", color: "#1E1830", flex: 1 }}>
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: "700",
+                color: "#1E1830",
+                flex: 1,
+              }}
+            >
               Peso
             </Text>
             <View
@@ -856,7 +1266,11 @@ export default function LogScreen() {
           }}
         >
           <Text style={{ color: "white", fontSize: 16, fontWeight: "700" }}>
-            {saveLogMutation.isPending ? "Salvando..." : isEditing ? "Atualizar registro" : "Salvar registro"}
+            {saveLogMutation.isPending
+              ? "Salvando..."
+              : isEditing
+                ? "Atualizar registro"
+                : "Salvar registro"}
           </Text>
         </Pressable>
       </ScrollView>

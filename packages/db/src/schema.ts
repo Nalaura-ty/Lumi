@@ -75,7 +75,9 @@ export const DailyLog = pgTable(
       .timestamp({ mode: "date", withTimezone: true })
       .$onUpdateFn(() => new Date()),
   }),
-  (table) => [unique("daily_log_user_date_unique").on(table.userId, table.date)],
+  (table) => [
+    unique("daily_log_user_date_unique").on(table.userId, table.date),
+  ],
 );
 
 export * from "./auth-schema";

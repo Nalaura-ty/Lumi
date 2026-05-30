@@ -1,5 +1,5 @@
-import { getPhaseForDay } from "./cycle-utils";
 import type { CyclePhase } from "./cycle-utils";
+import { getPhaseForDay } from "./cycle-utils";
 
 // Reference: today is May 29, 2026
 // Cycle started May 9, 2026 => Day 21 of a 28-day cycle
@@ -13,7 +13,7 @@ export const MOCK_USER = {
 
 export const MOCK_CURRENT_CYCLE = {
   dayOfCycle: 21,
-  phase: getPhaseForDay(21, 28, 5) as CyclePhase,
+  phase: getPhaseForDay(21, 28, 5),
   daysUntilNextPeriod: 7,
   daysUntilOvulation: 22,
   nextPeriodDate: new Date(2026, 5, 6),
@@ -63,9 +63,18 @@ export const MOCK_LOGGED_DAYS: Record<
   string,
   { flow?: string; mood?: string; symptoms: string[]; notes?: string }
 > = {
-  "2026-05-09": { flow: "Forte", mood: "Cansada", symptoms: ["Colicas", "Dor de cabeca"], notes: "" },
+  "2026-05-09": {
+    flow: "Forte",
+    mood: "Cansada",
+    symptoms: ["Colicas", "Dor de cabeca"],
+    notes: "",
+  },
   "2026-05-10": { flow: "Forte", mood: "Cansada", symptoms: ["Colicas"] },
-  "2026-05-11": { flow: "Medio", mood: "Triste", symptoms: ["Colicas", "Cansaco"] },
+  "2026-05-11": {
+    flow: "Medio",
+    mood: "Triste",
+    symptoms: ["Colicas", "Cansaco"],
+  },
   "2026-05-12": { flow: "Leve", mood: "Ok", symptoms: ["Cansaco"] },
   "2026-05-13": { flow: "Leve", mood: "Ok", symptoms: [] },
   "2026-05-14": { flow: undefined, mood: "Bem", symptoms: [] },
@@ -99,7 +108,11 @@ export const MOCK_INSIGHTS = {
 export const SELF_CARE_BY_PHASE = {
   menstrual: {
     exercises: [
-      { name: "Yoga restaurativa", duration: "20 min", icon: "fitness-outline" },
+      {
+        name: "Yoga restaurativa",
+        duration: "20 min",
+        icon: "fitness-outline",
+      },
       { name: "Caminhada leve", duration: "30 min", icon: "walk-outline" },
       { name: "Alongamento", duration: "15 min", icon: "body-outline" },
     ],
@@ -181,7 +194,7 @@ export const MOCK_PERIMENOPAUSE = {
 
 export const PERIMENOPAUSE_AFFIRMATIONS: string[] = [];
 
-export type Article = {
+export interface Article {
   id: string;
   title: string;
   description: string;
@@ -190,14 +203,15 @@ export type Article = {
   phase: CyclePhase | "all" | "perimenopause";
   color: string;
   icon: string;
-};
+}
 
 export const ARTICLES: Article[] = [
   // Perimenopause
   {
     id: "p1",
     title: "O que é a perimenopausa?",
-    description: "A transição para a menopausa pode durar anos. Entenda os sinais, os hormônios envolvidos e o que esperar.",
+    description:
+      "A transição para a menopausa pode durar anos. Entenda os sinais, os hormônios envolvidos e o que esperar.",
     readTime: "6 min",
     category: "Saúde",
     phase: "perimenopause",
@@ -207,7 +221,8 @@ export const ARTICLES: Article[] = [
   {
     id: "p2",
     title: "Como gerenciar as ondas de calor",
-    description: "Roupas em camadas, ventilação, técnicas de respiração e ajustes de dieta que realmente fazem diferença.",
+    description:
+      "Roupas em camadas, ventilação, técnicas de respiração e ajustes de dieta que realmente fazem diferença.",
     readTime: "5 min",
     category: "Bem-estar",
     phase: "perimenopause",
@@ -217,7 +232,8 @@ export const ARTICLES: Article[] = [
   {
     id: "p3",
     title: "Sono na perimenopausa: por que piora e o que fazer",
-    description: "Suor noturno, variação hormonal e ansiedade afetam o sono. Estratégias de higiene do sono e suplementação.",
+    description:
+      "Suor noturno, variação hormonal e ansiedade afetam o sono. Estratégias de higiene do sono e suplementação.",
     readTime: "5 min",
     category: "Sono",
     phase: "perimenopause",
@@ -227,7 +243,8 @@ export const ARTICLES: Article[] = [
   {
     id: "p4",
     title: "Exercício físico na perimenopausa",
-    description: "Musculação, yoga e caminhada ajudam a manter a densidade óssea, o humor e o peso. Saiba como adaptar.",
+    description:
+      "Musculação, yoga e caminhada ajudam a manter a densidade óssea, o humor e o peso. Saiba como adaptar.",
     readTime: "6 min",
     category: "Exercício",
     phase: "perimenopause",
@@ -237,7 +254,8 @@ export const ARTICLES: Article[] = [
   {
     id: "p5",
     title: "Saúde mental na transição hormonal",
-    description: "Ansiedade, irritabilidade e neblina mental são comuns. Terapia, mindfulness e rede de apoio fazem a diferença.",
+    description:
+      "Ansiedade, irritabilidade e neblina mental são comuns. Terapia, mindfulness e rede de apoio fazem a diferença.",
     readTime: "7 min",
     category: "Mente",
     phase: "perimenopause",
@@ -249,7 +267,8 @@ export const ARTICLES: Article[] = [
   {
     id: "a1",
     title: "Por que você sente mais dor na menstruação?",
-    description: "Entenda o papel das prostaglandinas e como aliviar as cólicas naturalmente com calor, dieta e movimento suave.",
+    description:
+      "Entenda o papel das prostaglandinas e como aliviar as cólicas naturalmente com calor, dieta e movimento suave.",
     readTime: "4 min",
     category: "Saúde",
     phase: "menstrual",
@@ -259,7 +278,8 @@ export const ARTICLES: Article[] = [
   {
     id: "a2",
     title: "Alimentos que aliviam a TPM",
-    description: "Magnésio, vitamina B6 e ômega-3 podem transformar sua fase lútea. Veja o que colocar no prato.",
+    description:
+      "Magnésio, vitamina B6 e ômega-3 podem transformar sua fase lútea. Veja o que colocar no prato.",
     readTime: "5 min",
     category: "Nutrição",
     phase: "menstrual",
@@ -270,7 +290,8 @@ export const ARTICLES: Article[] = [
   {
     id: "a3",
     title: "Fase folicular: o momento de recomeçar",
-    description: "Com o estrogênio subindo, sua criatividade e disposição aumentam. Saiba como aproveitar esse pico.",
+    description:
+      "Com o estrogênio subindo, sua criatividade e disposição aumentam. Saiba como aproveitar esse pico.",
     readTime: "3 min",
     category: "Ciclo",
     phase: "follicular",
@@ -280,7 +301,8 @@ export const ARTICLES: Article[] = [
   {
     id: "a4",
     title: "Exercícios ideais para cada fase do ciclo",
-    description: "Sincronize seu treino com seu ciclo e maximize resultados sem se esgotar.",
+    description:
+      "Sincronize seu treino com seu ciclo e maximize resultados sem se esgotar.",
     readTime: "6 min",
     category: "Exercício",
     phase: "follicular",
@@ -291,7 +313,8 @@ export const ARTICLES: Article[] = [
   {
     id: "a5",
     title: "Ovulação: entendendo seu pico de fertilidade",
-    description: "Como identificar os sinais da ovulação, o papel do muco cervical e o que acontece no seu corpo.",
+    description:
+      "Como identificar os sinais da ovulação, o papel do muco cervical e o que acontece no seu corpo.",
     readTime: "5 min",
     category: "Ciclo",
     phase: "ovulation",
@@ -301,7 +324,8 @@ export const ARTICLES: Article[] = [
   {
     id: "a6",
     title: "Pele e cabelo na fase da ovulação",
-    description: "Na ovulação você está no seu pico de estrogênio — sua pele agradece. Dicas para potencializar o brilho.",
+    description:
+      "Na ovulação você está no seu pico de estrogênio — sua pele agradece. Dicas para potencializar o brilho.",
     readTime: "3 min",
     category: "Beleza",
     phase: "ovulation",
@@ -312,7 +336,8 @@ export const ARTICLES: Article[] = [
   {
     id: "a7",
     title: "Como lidar com a ansiedade pré-menstrual",
-    description: "A queda de progesterona afeta o humor. Técnicas de respiração, rotinas e suplementos que realmente ajudam.",
+    description:
+      "A queda de progesterona afeta o humor. Técnicas de respiração, rotinas e suplementos que realmente ajudam.",
     readTime: "5 min",
     category: "Mente",
     phase: "luteal",
@@ -322,7 +347,8 @@ export const ARTICLES: Article[] = [
   {
     id: "a8",
     title: "Sono profundo na fase luteal",
-    description: "Por que é mais difícil dormir antes da menstruação e o que fazer para descansar de verdade.",
+    description:
+      "Por que é mais difícil dormir antes da menstruação e o que fazer para descansar de verdade.",
     readTime: "4 min",
     category: "Sono",
     phase: "luteal",
@@ -333,7 +359,8 @@ export const ARTICLES: Article[] = [
   {
     id: "a9",
     title: "O que é a sincronização do ciclo?",
-    description: "Adaptar alimentação, treinos e descanso ao ciclo menstrual pode melhorar sua qualidade de vida de forma significativa.",
+    description:
+      "Adaptar alimentação, treinos e descanso ao ciclo menstrual pode melhorar sua qualidade de vida de forma significativa.",
     readTime: "6 min",
     category: "Bem-estar",
     phase: "all",
@@ -343,7 +370,8 @@ export const ARTICLES: Article[] = [
   {
     id: "a10",
     title: "Hormônios femininos: guia completo",
-    description: "Estrogênio, progesterona, FSH e LH — o que cada um faz e como eles moldam seu ciclo mês a mês.",
+    description:
+      "Estrogênio, progesterona, FSH e LH — o que cada um faz e como eles moldam seu ciclo mês a mês.",
     readTime: "8 min",
     category: "Saúde",
     phase: "all",
@@ -353,7 +381,8 @@ export const ARTICLES: Article[] = [
   {
     id: "a11",
     title: "Meditação guiada para o ciclo menstrual",
-    description: "Cinco práticas curtas de mindfulness adaptadas para cada fase, do descanso na menstruação ao pico de energia.",
+    description:
+      "Cinco práticas curtas de mindfulness adaptadas para cada fase, do descanso na menstruação ao pico de energia.",
     readTime: "4 min",
     category: "Mindfulness",
     phase: "all",
@@ -363,7 +392,8 @@ export const ARTICLES: Article[] = [
   {
     id: "a12",
     title: "Suplementos para saúde hormonal",
-    description: "Vitamina D, magnésio, ômega-3 e zinco: o que a ciência diz sobre suplementação para mulheres.",
+    description:
+      "Vitamina D, magnésio, ômega-3 e zinco: o que a ciência diz sobre suplementação para mulheres.",
     readTime: "7 min",
     category: "Nutrição",
     phase: "all",
