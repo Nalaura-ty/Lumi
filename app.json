@@ -1,0 +1,8 @@
+{
+  "ios": {
+    "bundleIdentifier": "com.nalauradev.lumi"
+  },
+  "android": {
+    "package": "com.nalauradev.lumi"
+  }
+}

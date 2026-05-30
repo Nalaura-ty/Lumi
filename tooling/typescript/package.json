@@ -1,0 +1,7 @@
+{
+  "name": "@lumi/tsconfig",
+  "private": true,
+  "files": [
+    "*.json"
+  ]
+}
