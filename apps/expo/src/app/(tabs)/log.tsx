@@ -803,8 +803,7 @@ export default function LogScreen() {
     if (d.exercise?.length) setExercise(new Set(d.exercise));
     if (d.social?.length) setSocial(new Set(d.social));
     if (d.health?.length) setHealth(new Set(d.health));
-    if (d.contraception?.length)
-      setContraception(new Set(d.contraception));
+    if (d.contraception?.length) setContraception(new Set(d.contraception));
     if (d.menopause?.length) setMenopause(new Set(d.menopause));
     if (d.pregnancy?.length) setPregnancy(new Set(d.pregnancy));
     if (d.weight) setWeight(String(d.weight));

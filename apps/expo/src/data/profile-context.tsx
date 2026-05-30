@@ -56,7 +56,9 @@ const DEFAULT_CYCLE: CycleData = {
 
 const ProfileContext = createContext<ProfileContextValue>({
   mode: "cycle",
-  setMode: (_mode: ProfileMode) => { /* noop */ },
+  setMode: (_mode: ProfileMode) => {
+    /* noop */
+  },
   profile: null,
   cycleData: DEFAULT_CYCLE,
   hasRealCycleData: false,
@@ -77,11 +79,7 @@ function computeCycleData(
     (today.getTime() - lastPeriodStart.getTime()) / (1000 * 60 * 60 * 24),
   );
   const dayOfCycle = Math.max(1, (daysSinceStart % cycleLength) + 1);
-  const phase = getPhaseForDay(
-    dayOfCycle,
-    cycleLength,
-    periodLength,
-  );
+  const phase = getPhaseForDay(dayOfCycle, cycleLength, periodLength);
   const daysUntilNextPeriod = cycleLength - dayOfCycle + 1;
   const ovulationDay = cycleLength - 14;
   const daysUntilOvulation =

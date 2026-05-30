@@ -17,17 +17,17 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@lumi/db": "workspace:*",
     "@better-auth/expo": "catalog:",
+    "@lumi/db": "workspace:*",
     "@t3-oss/env-core": "^0.13.8",
     "better-auth": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@better-auth/cli": "catalog:",
     "@lumi/eslint-config": "workspace:*",
     "@lumi/prettier-config": "workspace:*",
     "@lumi/tsconfig": "workspace:*",
-    "@better-auth/cli": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"
