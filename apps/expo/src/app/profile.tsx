@@ -1490,7 +1490,6 @@ export default function ProfileScreen() {
 
         <RemindersSection />
 
-
         <Pressable
           onPress={handleLogout}
           style={({ pressed }) => ({

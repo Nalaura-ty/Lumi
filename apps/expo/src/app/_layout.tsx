@@ -6,6 +6,12 @@ import { router, Stack, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { QueryClientProvider, useMutation } from "@tanstack/react-query";
 
+import { ProfileProvider, useProfile } from "~/data/profile-context";
+import { queryClient, trpc } from "~/utils/api";
+import { authClient } from "~/utils/auth";
+
+import "../styles.css";
+
 // Show notifications when app is in foreground
 Notifications.setNotificationHandler({
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -26,12 +32,6 @@ if (Platform.OS === "android") {
     sound: "default",
   });
 }
-
-import { ProfileProvider, useProfile } from "~/data/profile-context";
-import { queryClient, trpc } from "~/utils/api";
-import { authClient } from "~/utils/auth";
-
-import "../styles.css";
 
 const PUBLIC_SEGMENTS = new Set(["login", "register", "onboarding"]);
 
