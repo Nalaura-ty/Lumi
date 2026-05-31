@@ -8,6 +8,7 @@ import { QueryClientProvider, useMutation } from "@tanstack/react-query";
 
 // Show notifications when app is in foreground
 Notifications.setNotificationHandler({
+  // eslint-disable-next-line @typescript-eslint/require-await
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
@@ -48,7 +49,8 @@ function AuthGatedStack() {
     void (async () => {
       try {
         const { status } = await Notifications.getPermissionsAsync();
-        if (status !== "granted") return;
+        if (status !== Notifications.PermissionStatus.GRANTED) return;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const projectId = Constants.expoConfig?.extra?.eas?.projectId as
           | string
           | undefined;

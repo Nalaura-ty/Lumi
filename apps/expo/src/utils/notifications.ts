@@ -80,7 +80,6 @@ export async function saveReminderSettings(
           content: {
             title: "Lumi",
             body: customMessage ?? shuffled[i % shuffled.length] ?? "",
-            android: { channelId: "default" },
           },
           trigger: {
             type: Notifications.SchedulableTriggerInputTypes.DAILY,
@@ -132,7 +131,6 @@ export async function savePillReminderSettings(
       content: {
         title: "Lumi",
         body: settings.message?.trim() ?? "Hora de tomar o anticoncepcional 💊",
-        android: { channelId: "default" },
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.DAILY,
@@ -192,7 +190,6 @@ export async function savePeriodReminderSettings(
           body:
             settings.message?.trim() ??
             "Sua menstruação está prevista para hoje 🌸",
-          android: { channelId: "default" },
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.DATE,

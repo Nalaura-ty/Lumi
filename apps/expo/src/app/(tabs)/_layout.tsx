@@ -1,3 +1,4 @@
+import type { ColorValue } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -10,7 +11,7 @@ function TabIcon({
   size,
 }: {
   name: IoniconName;
-  color: string;
+  color: ColorValue;
   size: number;
 }) {
   return <Ionicons name={name} size={size} color={color} />;
