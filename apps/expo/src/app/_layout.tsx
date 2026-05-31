@@ -29,7 +29,6 @@ if (Platform.OS === "android") {
   void Notifications.setNotificationChannelAsync("default", {
     name: "Lumi",
     importance: Notifications.AndroidImportance.HIGH,
-    sound: "default",
   });
 }
 
@@ -48,20 +47,37 @@ function AuthGatedStack() {
     if (!session?.user) return;
     void (async () => {
       try {
-        const { status } = await Notifications.getPermissionsAsync();
-        if (status !== Notifications.PermissionStatus.GRANTED) return;
+        let { status } = await Notifications.getPermissionsAsync();
+        if (status !== Notifications.PermissionStatus.GRANTED) {
+          ({ status } = await Notifications.requestPermissionsAsync());
+        }
+        if (status !== Notifications.PermissionStatus.GRANTED) {
+          console.log("[push] permission not granted:", status);
+          return;
+        }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const projectId = Constants.expoConfig?.extra?.eas?.projectId as
           | string
           | undefined;
-        if (!projectId) return;
+        if (!projectId) {
+          console.log("[push] projectId not found in Constants");
+          return;
+        }
         const { data: token } = await Notifications.getExpoPushTokenAsync({
           projectId,
         });
+        console.log("[push] token obtained:", token);
         const platform = Platform.OS === "ios" ? "ios" : "android";
-        registerTokenMutation.mutate({ token, platform });
-      } catch {
-        // not a physical device or permissions not granted
+        registerTokenMutation.mutate(
+          { token, platform },
+          {
+            onSuccess: () =>
+              console.log("[push] token registered successfully"),
+            onError: (e) => console.error("[push] register error:", e),
+          },
+        );
+      } catch (e) {
+        console.error("[push] error:", e);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
