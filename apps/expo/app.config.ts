@@ -7,7 +7,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   scheme: "lumi",
   version: "0.1.0",
   orientation: "portrait",
-  icon: "./assets/icon-light.png",
+  icon: "./assets/icon-novo.png",
   userInterfaceStyle: "automatic",
   updates: {
     fallbackToCacheTimeout: 0,
@@ -17,15 +17,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     bundleIdentifier: "com.lumi.app",
     supportsTablet: true,
     icon: {
-      light: "./assets/icon-light.png",
-      dark: "./assets/icon-dark.png",
+      light: "./assets/icon-novo.png",
+      dark: "./assets/icon-novo.png",
     },
   },
   android: {
     package: "com.lumi.app",
     adaptiveIcon: {
-      foregroundImage: "./assets/icon-light.png",
-      backgroundColor: "#1F104A",
+      foregroundImage: "./assets/icon-novo.png",
+      backgroundColor: "#1A0F2E",
     },
   },
   extra: {
@@ -46,7 +46,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       "expo-notifications",
       {
-        icon: "./assets/icon-light.png",
+        icon: "./assets/icon-novo.png",
         color: "#8B7EC8",
         sounds: [],
       },
@@ -55,10 +55,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       "expo-splash-screen",
       {
         backgroundColor: "#E4E4E7",
-        image: "./assets/icon-light.png",
+        image: "./assets/icon-novo.png",
         dark: {
           backgroundColor: "#18181B",
-          image: "./assets/icon-dark.png",
+          image: "./assets/icon-novo.png",
         },
       },
     ],

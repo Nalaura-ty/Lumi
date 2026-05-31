@@ -34,5 +34,12 @@
     "typescript": "catalog:"
   },
   "prettier": "@lumi/prettier-config",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "pnpm": {
+    "overrides": {
+      "expo-crypto": "~56.0.4",
+      "react": "19.2.3",
+      "react-dom": "19.2.3"
+    }
+  }
 }
