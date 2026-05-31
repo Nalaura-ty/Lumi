@@ -551,14 +551,20 @@ function PhaseHeroCard({
   } = cycleData;
   const info = getPhaseInfo(phase);
 
+  const daysSinceLastPeriod = Math.floor(
+    (TODAY.getTime() - lastPeriodStart.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
   useEffect(() => {
     updateAndroidWidget({
       phase,
       phaseName: info.name,
       dayOfCycle,
       daysUntilPeriod: daysUntilNextPeriod,
+      mode: "cycle",
+      daysSinceLastPeriod,
     });
-  }, [phase, info.name, dayOfCycle, daysUntilNextPeriod]);
+  }, [phase, info.name, dayOfCycle, daysUntilNextPeriod, daysSinceLastPeriod]);
 
   const todayStr = localDateStr();
   const { data: todayLog } = useQuery(
@@ -774,11 +780,21 @@ function PhaseHeroCard({
 
 function PerimenopauseHeroCard() {
   const { cycleData } = useProfile();
-  const today = new Date();
   const daysSinceLastPeriod = Math.floor(
-    (today.getTime() - cycleData.lastPeriodStart.getTime()) /
+    (TODAY.getTime() - cycleData.lastPeriodStart.getTime()) /
       (1000 * 60 * 60 * 24),
   );
+
+  useEffect(() => {
+    updateAndroidWidget({
+      phase: "luteal",
+      phaseName: "Perimenopausa",
+      dayOfCycle: 0,
+      daysUntilPeriod: 0,
+      mode: "perimenopause",
+      daysSinceLastPeriod,
+    });
+  }, [daysSinceLastPeriod]);
   const hotFlashesToday = 0;
   const hotFlashesThisWeek = 0;
   const mainSymptoms = ["Ondas de calor", "Insônia", "Humor instável"];

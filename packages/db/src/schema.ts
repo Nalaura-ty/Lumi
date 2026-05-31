@@ -80,4 +80,15 @@ export const DailyLog = pgTable(
   ],
 );
 
+export const PushToken = pgTable("push_token", (t) => ({
+  id: t.uuid().notNull().primaryKey().defaultRandom(),
+  userId: t
+    .text()
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  token: t.text().notNull().unique(),
+  platform: t.varchar({ length: 10 }).notNull(),
+  createdAt: t.timestamp().defaultNow().notNull(),
+}));
+
 export * from "./auth-schema";

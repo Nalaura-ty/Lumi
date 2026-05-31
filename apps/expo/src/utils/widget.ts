@@ -9,6 +9,8 @@ export function updateAndroidWidget(params: {
   phaseName: string;
   dayOfCycle: number;
   daysUntilPeriod: number;
+  mode: "cycle" | "perimenopause";
+  daysSinceLastPeriod: number;
 }) {
   if (Platform.OS !== "android") return;
   const lumiWidget = NativeModules.LumiWidget as
@@ -18,6 +20,8 @@ export function updateAndroidWidget(params: {
           phaseName: string,
           day: number,
           daysUntil: number,
+          mode: string,
+          daysSinceLastPeriod: number,
         ) => void;
       }
     | undefined;
@@ -26,5 +30,7 @@ export function updateAndroidWidget(params: {
     params.phaseName,
     params.dayOfCycle,
     params.daysUntilPeriod,
+    params.mode,
+    params.daysSinceLastPeriod,
   );
 }

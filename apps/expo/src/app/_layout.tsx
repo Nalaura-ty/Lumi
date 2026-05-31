@@ -1,11 +1,33 @@
 import { useEffect } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
+import Constants from "expo-constants";
+import * as Notifications from "expo-notifications";
 import { router, Stack, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider, useMutation } from "@tanstack/react-query";
+
+// Show notifications when app is in foreground
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
+
+// Android 8+ requires a channel
+if (Platform.OS === "android") {
+  void Notifications.setNotificationChannelAsync("default", {
+    name: "Lumi",
+    importance: Notifications.AndroidImportance.HIGH,
+    sound: "default",
+  });
+}
 
 import { ProfileProvider, useProfile } from "~/data/profile-context";
-import { queryClient } from "~/utils/api";
+import { queryClient, trpc } from "~/utils/api";
 import { authClient } from "~/utils/auth";
 
 import "../styles.css";
@@ -16,6 +38,33 @@ function AuthGatedStack() {
   const { data: session, isPending } = authClient.useSession();
   const { profile, isLoading: profileLoading } = useProfile();
   const segments = useSegments();
+  const registerTokenMutation = useMutation(
+    trpc.notification.registerToken.mutationOptions(),
+  );
+
+  // Register Expo push token with backend after login
+  useEffect(() => {
+    if (!session?.user) return;
+    void (async () => {
+      try {
+        const { status } = await Notifications.getPermissionsAsync();
+        if (status !== "granted") return;
+        const projectId = Constants.expoConfig?.extra?.eas?.projectId as
+          | string
+          | undefined;
+        if (!projectId) return;
+        const { data: token } = await Notifications.getExpoPushTokenAsync({
+          projectId,
+        });
+        const platform = Platform.OS === "ios" ? "ios" : "android";
+        registerTokenMutation.mutate({ token, platform });
+      } catch {
+        // not a physical device or permissions not granted
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.user.id]);
+
   // Redirect unauthenticated users to login
   useEffect(() => {
     if (isPending) return;
