@@ -7,6 +7,9 @@
     "base": {
       "node": "22.21.0",
       "pnpm": "10.19.0",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://lumi-nextjs-three.vercel.app"
+      },
       "ios": {
         "resourceClass": "m-medium"
       }
