@@ -1,6 +1,6 @@
-import { eq, notInArray } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { eq, notInArray } from "drizzle-orm";
 
 import { sendPushToUser } from "@lumi/api";
 import { db } from "@lumi/db/client";
@@ -10,13 +10,9 @@ import { env } from "~/env";
 
 export const runtime = "nodejs";
 
-function todayBRT(): { date: string; hour: number } {
+function todayBRT(): string {
   const brt = new Date(Date.now() - 3 * 60 * 60 * 1000);
-  const iso = brt.toISOString();
-  return {
-    date: iso.substring(0, 10),
-    hour: brt.getUTCHours(),
-  };
+  return brt.toISOString().substring(0, 10);
 }
 
 export async function GET(req: NextRequest) {
@@ -24,12 +20,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { date: today, hour } = todayBRT();
-
-  // Só envia entre 8h e 21h (horário de Brasília)
-  if (hour < 8 || hour >= 21) {
-    return NextResponse.json({ skipped: "outside hours" });
-  }
+  const today = todayBRT();
 
   const loggedToday = db
     .select({ userId: DailyLog.userId })
@@ -46,7 +37,7 @@ export async function GET(req: NextRequest) {
       sendPushToUser(
         userId,
         "Como você está hoje? 🌸",
-        "Registre seu ciclo agora — leva só um minutinho!",
+        "Não se esqueça de registrar seu ciclo antes de dormir!",
       ),
     ),
   );
