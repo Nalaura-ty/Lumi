@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Platform, View } from "react-native";
+import { NativeModules, Platform, View } from "react-native";
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import { router, Stack, useSegments } from "expo-router";
@@ -36,11 +36,25 @@ const PUBLIC_SEGMENTS = new Set(["login", "register", "onboarding"]);
 
 function AuthGatedStack() {
   const { data: session, isPending } = authClient.useSession();
-  const { profile, isLoading: profileLoading } = useProfile();
+  const { profile, cycleData, isLoading: profileLoading } = useProfile();
   const segments = useSegments();
   const registerTokenMutation = useMutation(
     trpc.notification.registerToken.mutationOptions(),
   );
+
+  // Sync cycle data to Android home screen widget
+  useEffect(() => {
+    if (!profile || Platform.OS !== "android") return;
+    const phaseNames: Record<string, string> = {
+      menstrual: "Menstrual",
+      follicular: "Folicular",
+      ovulation: "Ovulatória",
+      luteal: "Lútea",
+    };
+    const phaseName = phaseNames[cycleData.phase] ?? cycleData.phase;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    NativeModules.CycleWidget?.updateCycleData(phaseName, cycleData.daysUntilNextPeriod);
+  }, [cycleData.phase, cycleData.daysUntilNextPeriod, profile]);
 
   // Register Expo push token with backend after login
   useEffect(() => {
